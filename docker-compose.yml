@@ -8,14 +8,14 @@ services:
 #      RABBITMQ_DEFAULT_USER: your_username
 #      RABBITMQ_DEFAULT_PASS: your_password
 
-  api:
-    build:
-      context: ./API
-      dockerfile: Dockerfile
-    ports:
-      - "8080:80"
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
+#  api:
+#    build:
+#      context: ./API
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8080:80"
+#    environment:
+#      ASPNETCORE_ENVIRONMENT: Production
   
   authservice:
     build:

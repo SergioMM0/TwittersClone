@@ -10,7 +10,7 @@ WORKDIR "/src"
 RUN dotnet build "FollowersService.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "FollowersService.csproj" -c Release -o /app/publish
+RUN dotnet publish "FollowersService.csproj" -c Release -o /app/publish --no-self-contained
 
 FROM base AS final
 WORKDIR /app
