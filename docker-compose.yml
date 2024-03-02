@@ -1,14 +1,14 @@
 services:
-  rabbitmq:
-    image: rabbitmq:latest
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: your_username
-      RABBITMQ_DEFAULT_PASS: your_password
+#  rabbitmq:
+#    image: rabbitmq:latest
+#    ports:
+#      - "5672:5672"
+#      - "15672:15672"
+#    environment:
+#      RABBITMQ_DEFAULT_USER: your_username
+#      RABBITMQ_DEFAULT_PASS: your_password
 
-  API:
+  api:
     build:
       context: ./API
       dockerfile: Dockerfile

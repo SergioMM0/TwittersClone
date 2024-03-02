@@ -1,17 +1,18 @@
-# Use the .NET 7.0 SDK image to build the application
+﻿FROM mcr.microsoft.com/dotnet/runtime:7.0 AS base
+WORKDIR /app
+
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+WORKDIR /src
+COPY ["SearchService.csproj", "./"]
+RUN dotnet restore "SearchService.csproj"
+COPY . .
+WORKDIR "/src"
+RUN dotnet build "SearchService.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "SearchService.csproj" -c Release -o /app/publish
+
+FROM base AS final
 WORKDIR /app
-
-# Copy csproj and restore as distinct layers
-COPY *.csproj ./
-RUN dotnet restore
-
-# Copy the remaining source code and build the application
-COPY . ./
-RUN dotnet publish -c Release -o out
-
-# Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
-WORKDIR /app
-COPY --from=build /app/out ./
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "SearchService.dll"]
