@@ -8,39 +8,30 @@ services:
       RABBITMQ_DEFAULT_USER: your_username
       RABBITMQ_DEFAULT_PASS: your_password
 
-#  API:
-#    build:
-#      context: ./API
-#      dockerfile: Dockerfile
-#    ports:
-#      - "8080:80"  # Assuming your ASP.NET application listens on port 80
-#    environment:
-#      ASPNETCORE_ENVIRONMENT: Production
+  API:
+    build:
+      context: ./API
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
   
   authservice:
     build:
       context: ./AuthService
       dockerfile: Dockerfile
     ports:
-      - "8080:5254"  # Assuming your ASP.NET application listens on port 5254
+      - "8080:5254"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
 
-#  Domain:
-#    build:
-#      context: ./Domain
-#      dockerfile: Dockerfile
-#    ports:
-#      - "8087:5255"  # Assuming your ASP.NET application listens on port 5255
-#    environment:
-#      ASPNETCORE_ENVIRONMENT: Production
-
-  followerservice:
+  followersservice:
     build:
       context: ./FollowersService
       dockerfile: Dockerfile
     ports:
-      - "8081:5256"  # Assuming your ASP.NET application listens on port 5256
+      - "8081:5256"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
 
@@ -49,7 +40,7 @@ services:
       context: ./LikeService
       dockerfile: Dockerfile
     ports:
-      - "8082:5257"  # Assuming your ASP.NET application listens on port 5257
+      - "8082:5257"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
 
@@ -58,7 +49,7 @@ services:
       context: ./NotificationService
       dockerfile: Dockerfile
     ports:
-      - "8083:5258"  # Assuming your ASP.NET application listens on port 5258
+      - "8083:5258"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
 
@@ -67,7 +58,7 @@ services:
       context: ./PostService
       dockerfile: Dockerfile
     ports:
-      - "8084:5259"  # Assuming your ASP.NET application listens on port 5259
+      - "8084:5259"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
 
@@ -76,7 +67,7 @@ services:
       context: ./SearchService
       dockerfile: Dockerfile
     ports:
-      - "8085:5260"  # Assuming your ASP.NET application listens on port 5260
+      - "8085:5260"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       
@@ -85,6 +76,6 @@ services:
       context: ./UserService
       dockerfile: Dockerfile
     ports:
-      - "8086:5261"  # Assuming your ASP.NET application listens on port 5261
+      - "8086:5261"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
