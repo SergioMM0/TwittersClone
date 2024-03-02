@@ -22,7 +22,7 @@ services:
       context: ./AuthService
       dockerfile: Dockerfile
     ports:
-      - "8080:5254"
+      - "8087:5254"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
 
