@@ -1,19 +1,18 @@
-# Use the .NET Core SDK image to build the application
+FROM mcr.microsoft.com/dotnet/runtime:7.0 AS base
+WORKDIR /app
+
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+WORKDIR /src
+COPY ["AuthService.csproj", "./"]
+RUN dotnet restore "AuthService.csproj"
+COPY . .
+WORKDIR "/src"
+RUN dotnet build "AuthService.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "AuthService.csproj" -c Release -o /app/publish
+
+FROM base AS final
 WORKDIR /app
-
-# Copy the project files and restore dependencies
-COPY AuthService.csproj ./
-RUN dotnet restore
-
-# Copy the remaining files and build the application
-COPY . ./
-RUN dotnet publish -c Release -o out
-
-# Use a smaller runtime image to run the application
-FROM mcr.microsoft.com/dotnet/runtime:7.0 AS runtime
-WORKDIR /app
-COPY --from=build /app/out ./
-
-# Set the entry point for the application
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "AuthService.dll"]
