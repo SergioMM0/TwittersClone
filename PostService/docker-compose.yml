@@ -1,9 +1,0 @@
-services:
-  authservice:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8080:5255"  # Assuming your ASP.NET application listens on port 5255
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
