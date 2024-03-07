@@ -1,12 +1,12 @@
-services:
-#  rabbitmq:
-#    image: rabbitmq:latest
-#    ports:
-#      - "5672:5672"
-#      - "15672:15672"
-#    environment:
-#      RABBITMQ_DEFAULT_USER: your_username
-#      RABBITMQ_DEFAULT_PASS: your_password
+﻿services:
+  #  rabbitmq:
+  #    image: rabbitmq:latest
+  #    ports:
+  #      - "5672:5672"
+  #      - "15672:15672"
+  #    environment:
+  #      RABBITMQ_DEFAULT_USER: your_username
+  #      RABBITMQ_DEFAULT_PASS: your_password
 
   api:
     build:
@@ -70,7 +70,7 @@ services:
       - "8085:5260"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      
+  
   userservice:
     build:
       context: ./UserService
