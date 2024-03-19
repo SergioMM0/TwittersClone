@@ -2,9 +2,7 @@ version: "3"
 services:
   rabbitmq:
     image: rabbitmq:3-management-alpine
-    environment:
-      RABBITMQ_DEFAULT_USER: your_username
-      RABBITMQ_DEFAULT_PASS: your_password
+    
     healthcheck:
       test: rabbitmq-diagnostics check_port_connectivity
       interval: 1s
