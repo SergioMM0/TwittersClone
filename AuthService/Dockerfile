@@ -1,16 +1,21 @@
-FROM mcr.microsoft.com/dotnet/runtime:7.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
+EXPOSE 80
+EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["AuthService.csproj", "./"]
-RUN dotnet restore "AuthService.csproj"
+COPY ["AuthService/AuthService.csproj", "AuthService/"]
+COPY ["RabbitMQMessages/RabbitMQMessages.csproj", "RabbitMQMessages/"]
+RUN dotnet restore "AuthService/AuthService.csproj"
 COPY . .
-WORKDIR "/src"
-RUN dotnet build "AuthService.csproj" -c Release -o /app/build
+WORKDIR "/src/AuthService"
+RUN dotnet build "AuthService.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "AuthService.csproj" -c Release -o /app/publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "AuthService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

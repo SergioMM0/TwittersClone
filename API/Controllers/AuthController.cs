@@ -1,5 +1,29 @@
-﻿namespace API.Controllers; 
+﻿using API.Application.Clients;
+using Microsoft.AspNetCore.Mvc;
+using RabbitMQMessages;
 
-public class AuthController : BaseController {
-    
+namespace API.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class AuthController : ControllerBase {
+
+    private readonly MessageClient _messageClient;
+
+    public AuthController(MessageClient messageClient) {
+        _messageClient = messageClient;
+    }
+
+    [HttpPost]
+    public IActionResult Login() {
+        _messageClient.Send(
+            new RequestAuthMsg {
+                Username = "test",
+                Password = "test"
+            },
+            "AuthenticateUser"
+        );
+        
+        return Ok(true);
+    }
 }
