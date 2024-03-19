@@ -7,7 +7,11 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: your_username
       RABBITMQ_DEFAULT_PASS: your_password
-
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 1s
+      timeout: 5s
+      retries: 30
 
   api:
     build:
@@ -17,6 +21,9 @@ services:
       - "8080:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
   
   authservice:
     build:
@@ -26,6 +33,9 @@ services:
       - "8087:5254"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   followersservice:
     build:
@@ -35,6 +45,9 @@ services:
       - "8081:5256"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   likeservice:
     build:
@@ -44,6 +57,9 @@ services:
       - "8082:5257"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   notificationservice:
     build:
@@ -53,7 +69,10 @@ services:
       - "8083:5258"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+        
   postservice:
     build:
       context: ./PostService
@@ -62,6 +81,9 @@ services:
       - "8084:5259"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   searchservice:
     build:
@@ -71,8 +93,9 @@ services:
       - "8085:5260"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-  
-  
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
   
   userservice:
     build:
@@ -82,3 +105,6 @@ services:
       - "8086:5261"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy

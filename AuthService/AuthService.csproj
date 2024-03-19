@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EasyNetQ" Version="8.0.0-beta96" />
+    <PackageReference Include="EasyNetQ.Serialization.NewtonsoftJson" Version="8.0.0-beta96" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.16" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
@@ -17,6 +19,11 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <ProjectReference Include="..\RabbitMQMessages\RabbitMQMessages.csproj" />
     </ItemGroup>
 
 </Project>
