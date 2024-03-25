@@ -64,7 +64,7 @@ app.MapPost("/userservice/authenticate", async (RequestAuthMsg authRequest, Data
     
     // Acknowledge the request has been sent for processing
     // Actual authentication result will be given by AuthService
-    return Results.Accepted(new { Message = "Authentication request received. Processing..." });
+    return Results.Accepted(new { Message = "Authentication request received. Processing..." }.ToString());
 })
 .WithName("AuthenticateUser")
 .WithMetadata(new HttpMethodMetadata(new[] { "POST" }))
