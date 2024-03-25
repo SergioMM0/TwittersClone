@@ -2,6 +2,10 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using UserService.Models;
+using UserService.Application.Clients;
+using UserService.Application.Handlers;
+using RabbitMQMessages;
+using EasyNetQ;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,19 +50,21 @@ app.MapGet("/userservice/users/{id}", async (int id, DatabaseContext dbContext) 
 .WithOpenApi();
 
 // POST log in user
-app.MapPost("/userservice/authenticate", async (RequestAuthMsg authRequest, DatabaseContext dbContext) =>
+app.MapPost("/userservice/authenticate", async (RequestAuthMsg authRequest, DatabaseContext dbContext, MessageClient messageClient) =>
 {
-    var authService = new AuthenticationService();
-    var isAuthenticated = await authService.AuthenticateUser(authRequest.Username, authRequest.Password);
+    // Check if the username exists in the database
+    var userExists = await dbContext.Users.AnyAsync(u => u.Name == authRequest.Username);
+    if (!userExists)
+    {
+        return Results.NotFound(new { Message = "Username does not exist." });
+    }
+
+    // Send login message to AuthService for authentication
+    messageClient.Send(authRequest, "authenticate");
     
-    if (isAuthenticated)
-    {
-        return Results.Ok(new { Message = "User authenticated successfully." });
-    }
-    else
-    {
-        return Results.Unauthorized(new { Message = "Authentication failed. Please check your credentials." });
-    }
+    // Acknowledge the request has been sent for processing
+    // Actual authentication result will be given by AuthService
+    return Results.Accepted(new { Message = "Authentication request received. Processing..." });
 })
 .WithName("AuthenticateUser")
 .WithMetadata(new HttpMethodMetadata(new[] { "POST" }))
