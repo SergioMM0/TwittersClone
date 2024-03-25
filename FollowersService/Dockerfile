@@ -1,16 +1,20 @@
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
+EXPOSE 80
+EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["FollowersService.csproj", "./"]
-RUN dotnet restore "FollowersService.csproj"
+COPY ["FollowersService/FollowersService.csproj", "FollowersService/"]
+RUN dotnet restore "FollowersService/FollowersService.csproj"
 COPY . .
-WORKDIR "/src"
-RUN dotnet build "FollowersService.csproj" -c Release -o /app/build
+WORKDIR "/src/FollowersService"
+RUN dotnet build "FollowersService.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "FollowersService.csproj" -c Release -o /app/publish --no-self-contained
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "FollowersService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

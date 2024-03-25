@@ -1,17 +1,20 @@
-
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
+EXPOSE 80
+EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["LikeService.csproj", "./"]
-RUN dotnet restore "LikeService.csproj"
+COPY ["LikeService/LikeService.csproj", "LikeService/"]
+RUN dotnet restore "LikeService/LikeService.csproj"
 COPY . .
-WORKDIR "/src"
-RUN dotnet build "LikeService.csproj" -c Release -o /app/build
+WORKDIR "/src/LikeService"
+RUN dotnet build "LikeService.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "LikeService.csproj" -c Release -o /app/publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "LikeService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

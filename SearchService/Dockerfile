@@ -1,16 +1,20 @@
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
+EXPOSE 80
+EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["SearchService.csproj", "./"]
-RUN dotnet restore "SearchService.csproj"
+COPY ["SearchService/SearchService.csproj", "SearchService/"]
+RUN dotnet restore "SearchService/SearchService.csproj"
 COPY . .
-WORKDIR "/src"
-RUN dotnet build "SearchService.csproj" -c Release -o /app/build
+WORKDIR "/src/SearchService"
+RUN dotnet build "SearchService.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "SearchService.csproj" -c Release -o /app/publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "SearchService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
