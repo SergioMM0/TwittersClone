@@ -8,7 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="easynetq" Version="7.8.0" />
+    <PackageReference Include="easynetq" Version="8.0.0-beta96" />
+    <PackageReference Include="EasyNetQ.Serialization.SystemTextJson" Version="7.8.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.16" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.0" />
