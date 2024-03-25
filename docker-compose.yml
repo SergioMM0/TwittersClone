@@ -1,84 +1,117 @@
+version: "3"
 services:
   rabbitmq:
-    image: rabbitmq:latest
+    image: rabbitmq:3-management-alpine
+    
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 1s
+      timeout: 5s
+      retries: 30
     ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: your_username
-      RABBITMQ_DEFAULT_PASS: your_password
-
+        - "5672:5672"
+        - "15672:15672"
 
   api:
+    image: api
     build:
-      context: ./API
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: API/Dockerfile
     ports:
-      - "8080:80"
+      - "80:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
   
-  authservice:
+  auth-service:
+    image: auth-service
     build:
-      context: ./AuthService
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: AuthService/Dockerfile
     ports:
-      - "8087:5254"
+      - "81:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
-  followersservice:
+  followers-service:
+    image: followers-service
     build:
-      context: ./FollowersService
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: FollowersService/Dockerfile
     ports:
-      - "8081:5256"
+      - "82:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
-  likeservice:
+  like-service:
+    image: like-service
     build:
-      context: ./LikeService
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: LikeService/Dockerfile
     ports:
-      - "8082:5257"
+      - "83:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
-  notificationservice:
+  notification-service:
+    image: notification-service
     build:
-      context: ./NotificationService
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: NotificationService/Dockerfile
     ports:
-      - "8083:5258"
+      - "84:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+        
+  post-service:
+    image: post-service
+    build:
+      context: .
+      dockerfile: PostService/Dockerfile
+    ports:
+      - "85:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
-  postservice:
+  search-service:
+    image: search-service
     build:
-      context: ./PostService
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: SearchService/Dockerfile
     ports:
-      - "8084:5259"
+      - "86:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-
-  searchservice:
-    build:
-      context: ./SearchService
-      dockerfile: Dockerfile
-    ports:
-      - "8085:5260"
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
   
-  
-  
-  userservice:
+  user-service:
+    image: user-service
     build:
-      context: ./UserService
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: UserService/Dockerfile
     ports:
-      - "8086:5261"
+      - "87:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy

@@ -45,6 +45,25 @@ app.MapGet("/userservice/users/{id}", async (int id, DatabaseContext dbContext) 
 .WithMetadata(new HttpMethodMetadata(new[] { "GET" }))
 .WithOpenApi();
 
+// POST log in user
+app.MapPost("/userservice/authenticate", async (RequestAuthMsg authRequest, DatabaseContext dbContext) =>
+{
+    var authService = new AuthenticationService();
+    var isAuthenticated = await authService.AuthenticateUser(authRequest.Username, authRequest.Password);
+    
+    if (isAuthenticated)
+    {
+        return Results.Ok(new { Message = "User authenticated successfully." });
+    }
+    else
+    {
+        return Results.Unauthorized(new { Message = "Authentication failed. Please check your credentials." });
+    }
+})
+.WithName("AuthenticateUser")
+.WithMetadata(new HttpMethodMetadata(new[] { "POST" }))
+.WithOpenApi();
+
 // POST new user
 app.MapPost("/userservice/users", async (Users user, DatabaseContext dbContext) =>
 {
