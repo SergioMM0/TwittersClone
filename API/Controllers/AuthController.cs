@@ -1,6 +1,7 @@
 ﻿using API.Application.Clients;
 using Microsoft.AspNetCore.Mvc;
 using RabbitMQMessages;
+using RabbitMQMessages.Auth;
 
 namespace API.Controllers;
 
@@ -15,15 +16,16 @@ public class AuthController : ControllerBase {
     }
 
     [HttpPost]
-    public IActionResult Login() {
-        _messageClient.Send(
-            new RequestAuthMsg {
-                Username = "test",
-                Password = "test"
-            },
-            "AuthenticateUser"
-        );
+    public async Task<IActionResult> Login() {
+        var responseTask = _messageClient.ListenAsync<LoginMsg>("AuthService/login-response");
+
+        _messageClient.Send(new LoginReqMsg {
+            Username = "test",
+            Password = "test"
+        }, "AuthService/login-request");
+
+        var response = await responseTask;
         
-        return Ok(true);
+        return Ok(response.Token);
     }
 }

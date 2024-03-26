@@ -1,13 +1,19 @@
 ﻿using AuthService.Application.Clients;
+using AuthService.Core.Services;
 using EasyNetQ;
-using RabbitMQMessages;
+using RabbitMQMessages.Auth;
 
 
 namespace AuthService.Application.Handlers {
     public class MessageHandler : BackgroundService {
+        private readonly AuthenticationService _authenticationService;
+        
+        public MessageHandler(AuthenticationService authenticationService) {
+            _authenticationService = authenticationService;
+        }
 
-        private void HandleRequestAuthMessage(RequestAuthMsg msg) {
-            Console.WriteLine("Received request: " + msg.Username + " " + msg.Password);
+        private void HandleRequestAuthMessage(LoginReqMsg msg) {
+            _authenticationService.AuthenticateUser(msg.Username, msg.Password);
         }
     
         protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
@@ -16,7 +22,7 @@ namespace AuthService.Application.Handlers {
             var messageClient = new MessageClient(
                 RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest"));
         
-            messageClient.Listen<RequestAuthMsg>(HandleRequestAuthMessage, "authenticate");
+            messageClient.Listen<LoginReqMsg>(HandleRequestAuthMessage, "AuthService/login-request");
         
             while(!stoppingToken.IsCancellationRequested) {
                 await Task.Delay(1000, stoppingToken);

@@ -2,6 +2,7 @@
 
 using AuthService.Application.Clients;
 using AuthService.Application.Handlers;
+using AuthService.Core.Services;
 using EasyNetQ;
 
 
@@ -15,6 +16,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddSingleton(new MessageClient(RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest")));
 builder.Services.AddHostedService<MessageHandler>();
+builder.Services.AddScoped<AuthenticationService>();
 
 var app = builder.Build();
 

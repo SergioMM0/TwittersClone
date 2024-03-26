@@ -5,7 +5,7 @@ using EasyNetQ;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton(new MessageClient(RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest")));
-builder.Services.AddHostedService<MessageHandler>();
+builder.Services.AddHostedService<AuthMessageHandler>();
 
 
 builder.Services.AddControllers();

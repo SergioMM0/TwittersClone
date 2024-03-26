@@ -1,13 +1,13 @@
 ﻿using API.Application.Clients;
 using EasyNetQ;
-using RabbitMQMessages;
+using RabbitMQMessages.Auth;
 
 namespace API.Application.Handlers;
 
-public class MessageHandler : BackgroundService {
+public class AuthMessageHandler : BackgroundService {
 
-    private void HandleResponseAuthMessage(ResponseAuthMsg msg) {
-        Console.WriteLine("Received response: " + msg.IsAuthenticated);
+    private void HandleResponseAuthMessage(LoginMsg msg) {
+        Console.WriteLine("Received response: " + msg.Token);
     }
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
@@ -16,7 +16,7 @@ public class MessageHandler : BackgroundService {
         var messageClient = new MessageClient(
             RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest"));
         
-        messageClient.Listen<ResponseAuthMsg>(HandleResponseAuthMessage, "auth-response");
+        messageClient.Listen<LoginMsg>(HandleResponseAuthMessage, "AuthService/login-response");
         
         while(!stoppingToken.IsCancellationRequested) {
             await Task.Delay(1000, stoppingToken);
