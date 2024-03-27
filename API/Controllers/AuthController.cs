@@ -19,15 +19,20 @@ public class AuthController : ControllerBase {
     /// </summary>
     /// <returns>string - Authentication token</returns>
     [HttpPost]
-    public async Task<IActionResult> Login() {
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+
+    public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto) {
         var responseTask = _messageClient.ListenAsync<LoginMsg>("Authentication/login-response");
 
         _messageClient.Send(new LoginReqMsg {
-            Username = "test",
-            Password = "test"
+            Username = loginRequestDto.Username,
+            Password = loginRequestDto.Password
         }, "UserService/login-request");
 
         var response = await responseTask;
+        
+        Console.WriteLine($"The API has received: {response.Token}");
 
         return response.Token switch {
             "Unauthorized" => BadRequest("Invalid credentials"),
@@ -37,4 +42,9 @@ public class AuthController : ControllerBase {
         };
 
     }
+}
+
+public class LoginRequestDto {
+    public string Username { get; set; }
+    public string Password { get; set; }
 }

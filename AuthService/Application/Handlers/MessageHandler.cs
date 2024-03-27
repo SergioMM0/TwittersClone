@@ -13,6 +13,7 @@ public class MessageHandler : BackgroundService {
     }
 
     private void HandleRequestAuthMessage(LoginReqMsg msg) {
+        Console.WriteLine("Generating token for user {0}", msg.Username);
         _authenticationService.GenerateTokenForUser(msg.Username);
     }
 

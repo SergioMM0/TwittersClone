@@ -16,6 +16,7 @@ public class MessageHandler : BackgroundService {
         using var scope = _scopeFactory.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
         
+        Console.WriteLine("Checking user exists...");
         userManager.CheckUserExists(msg.Username, msg.Password);
     }
 
@@ -25,7 +26,7 @@ public class MessageHandler : BackgroundService {
         var messageClient = new MessageClient(
             RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest"));
 
-        messageClient.Listen<LoginReqMsg>(HandleLoginRequest, "Authentication/login-request");
+        messageClient.Listen<LoginReqMsg>(HandleLoginRequest, "UserService/login-request");
 
         while (!stoppingToken.IsCancellationRequested) {
             await Task.Delay(1000, stoppingToken);
