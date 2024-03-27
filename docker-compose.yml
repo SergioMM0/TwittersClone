@@ -9,8 +9,8 @@ services:
       timeout: 5s
       retries: 30
     ports:
-        - "5672:5672"
-        - "15672:15672"
+      - "5672:5672"
+      - "15672:15672"
 
   api:
     image: api
@@ -63,7 +63,7 @@ services:
   #  depends_on:
   #    rabbitmq:
   #      condition: service_healthy
-#
+  #
   #notification-service:
   #  image: notification-service
   #  build:
@@ -89,7 +89,7 @@ services:
   #  depends_on:
   #    rabbitmq:
   #      condition: service_healthy
-#
+  #
   #search-service:
   #  image: search-service
   #  build:
@@ -103,15 +103,15 @@ services:
   #    rabbitmq:
   #      condition: service_healthy
   #
-  #user-service:
-  #  image: user-service
-  #  build:
-  #    context: .
-  #    dockerfile: UserService/Dockerfile
-  #  ports:
-  #    - "87:80"
-  #  environment:
-  #    ASPNETCORE_ENVIRONMENT: Production
-  #  depends_on:
-  #    rabbitmq:
-  #      condition: service_healthy
+  user-service:
+    image: user-service
+    build:
+      context: .
+      dockerfile: UserService/Dockerfile
+    ports:
+      - "87:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy

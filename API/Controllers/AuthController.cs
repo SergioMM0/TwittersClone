@@ -15,6 +15,10 @@ public class AuthController : ControllerBase {
         _messageClient = messageClient;
     }
 
+    /// <summary>
+    /// Generates a token for the user
+    /// </summary>
+    /// <returns></returns>
     [HttpPost]
     public async Task<IActionResult> Login() {
         var responseTask = _messageClient.ListenAsync<LoginMsg>("AuthService/login-response");
@@ -22,7 +26,7 @@ public class AuthController : ControllerBase {
         _messageClient.Send(new LoginReqMsg {
             Username = "test",
             Password = "test"
-        }, "AuthService/login-request");
+        }, "UserService/login-request");
 
         var response = await responseTask;
         
