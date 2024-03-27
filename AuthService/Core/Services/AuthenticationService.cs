@@ -11,8 +11,8 @@ public class AuthenticationService {
     
     public void GenerateTokenForUser(string msgUsername) {
         _messageClient.Send(new LoginMsg() {
-                Token = $"Authorized user + {msgUsername}"
-            }, "AuthService/login-response"
+                Token = $"Authorized user {msgUsername}"
+            }, "Authentication/login-response"
         );
     }
 }
