@@ -8,11 +8,11 @@ public class AuthenticationService {
     public AuthenticationService(MessageClient messageClient) {
         _messageClient = messageClient;
     }
-
-    public void AuthenticateUser(string username, string password) {
+    
+    public void GenerateTokenForUser(string msgUsername) {
         _messageClient.Send(new LoginMsg() {
-            Token = "token"
-        }, "AuthService/login-response"
+                Token = $"Authorized user + {msgUsername}"
+            }, "AuthService/login-response"
         );
     }
 }

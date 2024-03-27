@@ -15,12 +15,12 @@ public class AuthController : ControllerBase {
     }
 
     /// <summary>
-    /// Generates a token for the user
+    /// Logs the user in the system
     /// </summary>
-    /// <returns></returns>
+    /// <returns>string - Authentication token</returns>
     [HttpPost]
     public async Task<IActionResult> Login() {
-        var responseTask = _messageClient.ListenAsync<LoginMsg>("AuthService/login-response");
+        var responseTask = _messageClient.ListenAsync<LoginMsg>("Authentication/login-response");
 
         _messageClient.Send(new LoginReqMsg {
             Username = "test",
@@ -29,6 +29,12 @@ public class AuthController : ControllerBase {
 
         var response = await responseTask;
 
-        return Ok(response.Token);
+        return response.Token switch {
+            "Unauthorized" => BadRequest("Invalid credentials"),
+            "User not found" => BadRequest("User not found"),
+            "Incorrect password" => BadRequest("Incorrect password"),
+            _ => Ok(response.Token)
+        };
+
     }
 }

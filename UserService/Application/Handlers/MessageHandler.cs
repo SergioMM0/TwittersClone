@@ -6,14 +6,17 @@ using UserService.Core.Services;
 namespace UserService.Application.Handlers;
 
 public class MessageHandler : BackgroundService {
-    private readonly UserManager _userManager;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public MessageHandler(UserManager userManager) {
-        _userManager = userManager;
+    public MessageHandler(IServiceScopeFactory scopeFactory) {
+        _scopeFactory = scopeFactory;
     }
 
-    private void HandleLoginRequest(LoginMsg msg) {
-        _userManager.CheckCredentials(msg);
+    private void HandleLoginRequest(LoginReqMsg msg) {
+        using var scope = _scopeFactory.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
+        
+        userManager.CheckUserExists(msg.Username, msg.Password);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
@@ -22,7 +25,7 @@ public class MessageHandler : BackgroundService {
         var messageClient = new MessageClient(
             RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest"));
 
-        messageClient.Listen<LoginMsg>(HandleLoginRequest, "UserService/login-request");
+        messageClient.Listen<LoginReqMsg>(HandleLoginRequest, "Authentication/login-request");
 
         while (!stoppingToken.IsCancellationRequested) {
             await Task.Delay(1000, stoppingToken);

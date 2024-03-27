@@ -13,7 +13,7 @@ public class MessageHandler : BackgroundService {
     }
 
     private void HandleRequestAuthMessage(LoginReqMsg msg) {
-        _authenticationService.AuthenticateUser(msg.Username, msg.Password);
+        _authenticationService.GenerateTokenForUser(msg.Username);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
