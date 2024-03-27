@@ -1,4 +1,4 @@
-
+﻿
 using EasyNetQ;
 using UserService.Application.Clients;
 using UserService.Application.Handlers;
@@ -19,8 +19,7 @@ builder.Services.AddScoped<UserManager>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
 }

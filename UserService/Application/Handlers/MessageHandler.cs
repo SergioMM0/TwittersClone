@@ -7,7 +7,7 @@ namespace UserService.Application.Handlers;
 
 public class MessageHandler : BackgroundService {
     private readonly UserManager _userManager;
-        
+
     public MessageHandler(UserManager userManager) {
         _userManager = userManager;
     }

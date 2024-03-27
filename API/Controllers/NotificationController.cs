@@ -1,5 +1,5 @@
-﻿namespace API.Controllers; 
+﻿namespace API.Controllers;
 
 public class NotificationController {
-    
+
 }

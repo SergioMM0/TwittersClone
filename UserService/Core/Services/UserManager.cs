@@ -3,7 +3,7 @@
 namespace UserService.Core.Services;
 
 public class UserManager {
-        
+
     public UserManager() {
     }
 

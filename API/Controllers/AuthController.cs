@@ -1,6 +1,5 @@
 ﻿using API.Application.Clients;
 using Microsoft.AspNetCore.Mvc;
-using RabbitMQMessages;
 using RabbitMQMessages.Auth;
 
 namespace API.Controllers;
@@ -29,7 +28,7 @@ public class AuthController : ControllerBase {
         }, "UserService/login-request");
 
         var response = await responseTask;
-        
+
         return Ok(response.Token);
     }
 }
