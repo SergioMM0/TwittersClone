@@ -1,6 +1,4 @@
-﻿
-
-using AuthService.Application.Clients;
+﻿using AuthService.Application.Clients;
 using AuthService.Application.Handlers;
 using AuthService.Core.Services;
 using EasyNetQ;
