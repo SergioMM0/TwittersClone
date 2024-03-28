@@ -3,7 +3,7 @@ using API.Core.Domain.Exceptions;
 using API.Core.Domain.Responses;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace API.Application.Filters; 
+namespace API.Application.Filters;
 
 /// <summary>
 /// An exception filter that filters exceptions thrown by the application.
@@ -34,7 +34,7 @@ public class ExceptionFilter : IAsyncExceptionFilter {
         if (exception is AppException appException) {
             switch (appException) {
                 // Add here any kind of exception thrown by the API
-                
+
                 /*
                 Ex:
                 case UserNotFoundException userNotFoundException:

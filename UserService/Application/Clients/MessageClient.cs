@@ -1,6 +1,7 @@
 ﻿using EasyNetQ;
 
-namespace AuthService.Application.Clients; 
+namespace UserService.Application.Clients;
+
 public class MessageClient {
     private readonly IBus _bus;
 

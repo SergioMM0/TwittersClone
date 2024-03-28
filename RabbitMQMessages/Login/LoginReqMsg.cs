@@ -1,6 +1,7 @@
-﻿namespace RabbitMQMessages;
+﻿namespace RabbitMQMessages.Login;
 
-public class RequestAuthMsg {
+public class LoginReqMsg
+{
     public string Username { get; set; }
     public string Password { get; set; }
 }

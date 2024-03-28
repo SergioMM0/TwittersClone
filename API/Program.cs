@@ -1,12 +1,11 @@
-using API.Application.Clients;
+﻿using API.Application.Clients;
 using API.Application.Handlers;
 using EasyNetQ;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton(new MessageClient(RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest")));
-builder.Services.AddHostedService<MessageHandler>();
-
+builder.Services.AddHostedService<AuthMessageHandler>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -15,15 +14,14 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
 app.MapControllers();
 
