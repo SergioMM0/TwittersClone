@@ -35,9 +35,8 @@ public class UserManager {
         }
         else {
             Console.WriteLine("User found and verified... sending request to AuthService");
-            _messageClient.Send(new LoginReqMsg() {
-                Username = username,
-                Password = password
+            _messageClient.Send(new GenerateTokenMsg() {
+                Username = username
             }, "AuthService/login-request");
         }
     }

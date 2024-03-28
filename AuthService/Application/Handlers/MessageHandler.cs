@@ -12,7 +12,7 @@ public class MessageHandler : BackgroundService {
         _authenticationService = authenticationService;
     }
 
-    private void HandleRequestAuthMessage(LoginReqMsg msg) {
+    private void HandleRequestAuthMessage(GenerateTokenMsg msg) {
         Console.WriteLine("Generating token for user {0}", msg.Username);
         _authenticationService.GenerateTokenForUser(msg.Username);
     }
@@ -23,7 +23,7 @@ public class MessageHandler : BackgroundService {
         var messageClient = new MessageClient(
             RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest"));
 
-        messageClient.Listen<LoginReqMsg>(HandleRequestAuthMessage, "AuthService/login-request");
+        messageClient.Listen<GenerateTokenMsg>(HandleRequestAuthMessage, "AuthService/login-request");
 
         while (!stoppingToken.IsCancellationRequested) {
             await Task.Delay(1000, stoppingToken);
