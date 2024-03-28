@@ -1,5 +1,5 @@
 ﻿using AuthService.Application.Clients;
-using RabbitMQMessages.Auth;
+using RabbitMQMessages.Login;
 
 namespace AuthService.Core.Services; 
 public class AuthenticationService {

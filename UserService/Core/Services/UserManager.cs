@@ -1,4 +1,4 @@
-﻿using RabbitMQMessages.Auth;
+﻿using RabbitMQMessages.Login;
 using UserService.Application.Clients;
 using UserService.Infrastructure.Repositories;
 

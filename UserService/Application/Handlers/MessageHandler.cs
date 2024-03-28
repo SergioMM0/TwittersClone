@@ -1,5 +1,5 @@
 ﻿using EasyNetQ;
-using RabbitMQMessages.Auth;
+using RabbitMQMessages.Login;
 using UserService.Application.Clients;
 using UserService.Core.Services;
 

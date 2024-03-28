@@ -1,6 +1,6 @@
 ﻿using API.Application.Clients;
 using Microsoft.AspNetCore.Mvc;
-using RabbitMQMessages.Auth;
+using RabbitMQMessages.Login;
 
 namespace API.Controllers;
 

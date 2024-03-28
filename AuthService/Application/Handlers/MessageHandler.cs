@@ -1,7 +1,7 @@
 ﻿using AuthService.Application.Clients;
 using AuthService.Core.Services;
 using EasyNetQ;
-using RabbitMQMessages.Auth;
+using RabbitMQMessages.Login;
 
 
 namespace AuthService.Application.Handlers; 
