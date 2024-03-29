@@ -26,8 +26,4 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\RabbitMQMessages\RabbitMQMessages.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -1,5 +1,5 @@
 ﻿namespace RabbitMQMessages.Login {
     public class GenerateTokenMsg {
-        public string Username { get; set; }
+        public required string Username { get; set; }
     }
 }

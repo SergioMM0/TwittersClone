@@ -5,7 +5,7 @@ using UserService.Application.Handlers;
 using RabbitMQMessages;
 using EasyNetQ;
 using EasyNetQ.DI;
-using EasyNetQ.Serialization.SystemTextJson;
+using EasyNetQ.Serialization.NewtonsoftJson;
 using UserService.Core.Services;
 using UserService.Infrastructure.Repositories;
 
