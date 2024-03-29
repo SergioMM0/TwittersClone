@@ -6,6 +6,8 @@ using RabbitMQMessages;
 using EasyNetQ;
 using EasyNetQ.DI;
 using EasyNetQ.Serialization.SystemTextJson;
+using UserService.Core.Services;
+using UserService.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,24 +18,19 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 builder.Services.AddControllers(); // Ensure your controllers are added
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
 
-builder.Services.AddSingleton<MessageClient>(); // Registers MessageClient for DI
+// Add services
+
+builder.Services.AddSingleton(new MessageClient(RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest"))); // Registers MessageClient for DI
 builder.Services.AddHostedService<MessageHandler>(); // Registers MessageHandler as a background service
-builder.Services.AddLogging(); // Adds logging services
-
-// Register the EasyNetQ IBus instance with the DI container
-var bus = RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest", services =>
-{
-    services.Register<ISerializer>(_ => new SystemTextJsonSerializer());
-});
-
-builder.Services.AddSingleton<IBus>(bus);
+builder.Services.AddScoped<UserManager>();
+builder.Services.AddScoped<UserRepository>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
 }

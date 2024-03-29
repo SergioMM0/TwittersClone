@@ -1,4 +1,4 @@
-﻿namespace API.Core.Domain.Exceptions; 
+﻿namespace API.Core.Domain.Exceptions;
 
 /// <summary>
 /// Represents a general application exception.
