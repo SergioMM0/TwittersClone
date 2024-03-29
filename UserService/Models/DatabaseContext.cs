@@ -1,33 +1,41 @@
 using System;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace UserService.Models
 {
     public class DatabaseContext : DbContext
     {
-        // Define the path for the SQLite database
-        private const string DatabasePath = "Data Source=UserService/UsersDatabase.db";
-
-        public DatabaseContext(DbContextOptions<DatabaseContext> options)
-            : base(options)
+        // Define the constructor
+        public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
         }
-
-        // DbSet for your Users entity
-        public DbSet<Users> Users { get; set; }
-
-        // Override OnConfiguring method to configure SQLite connection
+        // Define the OnConfiguring method
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // Use SQLite with the specified database path
-            optionsBuilder.UseSqlite(DatabasePath);
+            if (!optionsBuilder.IsConfigured)
+            {
+                // Define the path for the SQLite database only if not configured by DI container
+                const string DatabasePath = "Data Source=/app/UserService/UsersDatabase/UsersDatabase.db";
+                optionsBuilder.UseSqlite(DatabasePath);
+            }
         }
+    
+    // Define the DbSet for Users
+    public DbSet<Users> Users { get; set; }
     }
-
+    
+    // Define the Users class
     public class Users
     {
+        [Key]
         public int Id { get; set; }
-        public required string Name { get; set; }
-        public required string Password { get; set; }
+        
+        [Required]
+        public string? Name { get; set; }
+        
+        [Required]
+        public string? Password { get; set; }
     }
 }

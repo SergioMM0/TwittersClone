@@ -108,8 +108,10 @@ services:
     build:
       context: .
       dockerfile: UserService/Dockerfile
+    volumes:
+      - ./UserService/UsersDatabase:/app/UserService/UsersDatabase
     ports:
-      - "87:80"
+      - "8080:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
     depends_on:

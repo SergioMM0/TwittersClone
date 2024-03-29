@@ -1,17 +1,22 @@
-﻿using UserService.Core.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using UserService.Core.Domain.Entities;
+using UserService.Models;
 
 namespace UserService.Infrastructure.Repositories;
 
 public class UserRepository {
-    public bool CheckUserExists(string username) {
-        return username is "test" or "admin";
+    private readonly DatabaseContext _DbContext;
+
+    public UserRepository(DatabaseContext context) {
+        _DbContext = context;
     }
-    public User? CheckPassword(string username, string password) {
-        if (username == "admin")
-            return new User {
-                Username = username,
-                Password = password
-            };
-        return null;
+
+    public async Task<bool> CheckUserExists(string username) {
+        return await _DbContext.Users.AnyAsync(u => u.Name == username);
+    }
+
+    public async Task<Users?> CheckPassword(string username, string password) {
+        return await _DbContext.Users
+            .FirstOrDefaultAsync(u => u.Name == username && u.Password == password);
     }
 }

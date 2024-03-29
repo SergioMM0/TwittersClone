@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UserService.Models;
-using UserService.Application.Clients;
-using RabbitMQMessages;
+using UserService.Infrastructure.Repositories;
+using UserService.Core.Domain.Entities;
+using UserService.Core.Services;
+using RabbitMQMessages.Login;
 
 namespace UserService.Controllers
 {
@@ -10,26 +12,22 @@ namespace UserService.Controllers
     [Route("[controller]")]
     public class UserServiceController : ControllerBase
     {
+        private readonly UserManager _userManager;
         private readonly DatabaseContext _dbContext;
-        private readonly MessageClient _messageClient;
 
-        public UserServiceController(DatabaseContext dbContext, MessageClient messageClient)
+        public UserServiceController(UserManager userManager, DatabaseContext dbContext)
         {
+            _userManager = userManager;
             _dbContext = dbContext;
-            _messageClient = messageClient;
         }
 
         // POST: Authenticate User
         [HttpPost("authenticate")]
-        public async Task<IActionResult> Authenticate([FromBody] RequestAuthMsg authRequest)
+        public IActionResult Authenticate([FromBody] LoginReqMsg LoginReqMsg)
         {
-            var userExists = await _dbContext.Users.AnyAsync(u => u.Name == authRequest.Username);
-            if (!userExists)
-            {
-                return NotFound(new { Message = "Username does not exist." });
-            }
+            _ = _userManager.CheckUserExists(LoginReqMsg.Username, LoginReqMsg.Password);
+            // Processes the authentication request
 
-            _messageClient.Send(authRequest, "auth.request");
             return Accepted(new { Message = "Authentication request received. Processing..." });
         }
 
@@ -37,8 +35,16 @@ namespace UserService.Controllers
         [HttpGet("users")]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _dbContext.Users.ToListAsync();
-            return Ok(users);
+            try
+            {
+                var users = await _dbContext.Users.ToListAsync();
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return StatusCode(500, "An internal error occurred.");
+            }
         }
 
         // GET: User by ID
