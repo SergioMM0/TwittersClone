@@ -1,4 +1,4 @@
-﻿using EasyNetQ;
+using EasyNetQ;
 
 namespace UserService.Application.Clients;
 
