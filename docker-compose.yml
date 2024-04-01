@@ -64,18 +64,18 @@ services:
   #    rabbitmq:
   #      condition: service_healthy
   #
-  #notification-service:
-  #  image: notification-service
-  #  build:
-  #    context: .
-  #    dockerfile: NotificationService/Dockerfile
-  #  ports:
-  #    - "84:80"
-  #  environment:
-  #    ASPNETCORE_ENVIRONMENT: Production
-  #  depends_on:
-  #    rabbitmq:
-  #      condition: service_healthy
+  notification-service:
+    image: notification-service
+    build:
+      context: .
+      dockerfile: NotificationService/Dockerfile
+    ports:
+      - "8084:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
   #      
   #post-service:
   #  image: post-service
