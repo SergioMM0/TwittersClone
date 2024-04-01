@@ -1,6 +1,7 @@
 ﻿using FollowersService.Application.Clients;
 using FollowersService.Core.Services;
 using EasyNetQ;
+using RabbitMQMessages.Follow;
 
 namespace FollowersService.Application.Handlers; 
 public class MessageHandler : BackgroundService {
