@@ -1,8 +1,8 @@
+using EasyNetQ;
 using Microsoft.EntityFrameworkCore;
-using UserService.Models;
 using UserService.Application.Clients;
 using UserService.Application.Handlers;
-using EasyNetQ;
+using UserService.Models;
 using UserService.Core.Services;
 using UserService.Infrastructure.Repositories;
 
@@ -25,6 +25,13 @@ builder.Services.AddScoped<UserManager>();
 builder.Services.AddScoped<UserRepository>();
 
 var app = builder.Build();
+
+// Ensure the database is created and up-to-date
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+    dbContext.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
