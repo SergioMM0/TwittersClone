@@ -15,10 +15,10 @@ public class UserController : ControllerBase {
     public UserController(UserManager userManager) {
         _userManager = userManager;
     }
-
-    [HttpPost]
+    
     public void LocalTestAddUser() {
         _userManager.LocalTestAddUser();
+
     }
     /*
     private readonly UserManager _userManager;
