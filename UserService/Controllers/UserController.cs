@@ -1,30 +1,26 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UserService.Models;
-using UserService.Infrastructure.Repositories;
-using UserService.Core.Domain.Entities;
 using UserService.Core.Services;
 using RabbitMQMessages.Login;
+using UserService.Core.Domain.Entities;
 
-namespace UserService.Controllers
-{
+namespace UserService.Controllers {
     [ApiController]
     [Route("[controller]")]
-    public class UserServiceController : ControllerBase
-    {
+    public class UserServiceController : ControllerBase {
+        /*
         private readonly UserManager _userManager;
         private readonly DatabaseContext _dbContext;
 
-        public UserServiceController(UserManager userManager, DatabaseContext dbContext)
-        {
+        public UserServiceController(UserManager userManager, DatabaseContext dbContext) {
             _userManager = userManager;
             _dbContext = dbContext;
         }
 
         // POST: Authenticate User
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody] LoginReqMsg LoginReqMsg)
-        {
+        public IActionResult Authenticate([FromBody] LoginReqMsg LoginReqMsg) {
             _ = _userManager.CheckUserExists(LoginReqMsg.Username, LoginReqMsg.Password);
             // Processes the authentication request
 
@@ -33,15 +29,12 @@ namespace UserService.Controllers
 
         // GET: All Users
         [HttpGet("users")]
-        public async Task<IActionResult> GetAllUsers()
-        {
-            try
-            {
+        public async Task<IActionResult> GetAllUsers() {
+            try {
                 var users = await _dbContext.Users.ToListAsync();
                 return Ok(users);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Console.WriteLine(ex.ToString());
                 return StatusCode(500, "An internal error occurred.");
             }
@@ -49,11 +42,9 @@ namespace UserService.Controllers
 
         // GET: User by ID
         [HttpGet("users/{id}")]
-        public async Task<IActionResult> GetUserById(int id)
-        {
+        public async Task<IActionResult> GetUserById(int id) {
             var user = await _dbContext.Users.FindAsync(id);
-            if (user == null)
-            {
+            if (user == null) {
                 return NotFound();
             }
             return Ok(user);
@@ -61,8 +52,7 @@ namespace UserService.Controllers
 
         // POST: Add New User
         [HttpPost("users")]
-        public async Task<IActionResult> AddUser([FromBody] Users user)
-        {
+        public async Task<IActionResult> AddUser([FromBody] User user) {
             _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync();
             return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
@@ -70,11 +60,9 @@ namespace UserService.Controllers
 
         // PUT: Update User's Username
         [HttpPut("username/{id}")]
-        public async Task<IActionResult> UpdateUsername(int id, [FromBody] Users updatedUser)
-        {
+        public async Task<IActionResult> UpdateUsername(int id, [FromBody] User updatedUser) {
             var user = await _dbContext.Users.FindAsync(id);
-            if (user == null)
-            {
+            if (user == null) {
                 return NotFound();
             }
 
@@ -85,11 +73,9 @@ namespace UserService.Controllers
 
         // PUT: Update User's Password
         [HttpPut("userpassword/{id}")]
-        public async Task<IActionResult> UpdatePassword(int id, [FromBody] Users updatedUser)
-        {
+        public async Task<IActionResult> UpdatePassword(int id, [FromBody] Users updatedUser) {
             var user = await _dbContext.Users.FindAsync(id);
-            if (user == null)
-            {
+            if (user == null) {
                 return NotFound();
             }
 
@@ -100,11 +86,9 @@ namespace UserService.Controllers
 
         // DELETE: Remove User
         [HttpDelete("users/{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
-        {
+        public async Task<IActionResult> DeleteUser(int id) {
             var user = await _dbContext.Users.FindAsync(id);
-            if (user == null)
-            {
+            if (user == null) {
                 return NotFound();
             }
 
@@ -112,5 +96,7 @@ namespace UserService.Controllers
             await _dbContext.SaveChangesAsync();
             return NoContent();
         }
+    }
+    */
     }
 }
