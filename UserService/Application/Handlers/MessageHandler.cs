@@ -1,4 +1,4 @@
-﻿using EasyNetQ;
+using EasyNetQ;
 using RabbitMQMessages.Login;
 using UserService.Application.Clients;
 using UserService.Core.Services;
