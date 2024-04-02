@@ -38,18 +38,18 @@ services:
       rabbitmq:
         condition: service_healthy
 
-  #followers-service:
-  #  image: followers-service
-  #  build:
-  #    context: .
-  #    dockerfile: FollowersService/Dockerfile
-  #  ports:
-  #    - "82:80"
-  #  environment:
-  #    ASPNETCORE_ENVIRONMENT: Production
-  #  depends_on:
-  #    rabbitmq:
-  #      condition: service_healthy
+  followers-service:
+    image: followers-service
+    build:
+      context: .
+      dockerfile: FollowersService/Dockerfile
+    ports:
+      - "82:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   #like-service:
   #  image: like-service
