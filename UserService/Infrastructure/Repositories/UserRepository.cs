@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using UserService.Core.Domain.Entities;
+﻿using UserService.Core.Domain.Entities;
 using UserService.Models;
 
 namespace UserService.Infrastructure.Repositories;
@@ -11,12 +10,20 @@ public class UserRepository {
         _DbContext = context;
     }
 
-    public async Task<bool> CheckUserExists(string username) {
-        return await _DbContext.Users.AnyAsync(u => u.Name == username);
+    public bool CheckUserExists(string username) {
+        Console.WriteLine("Checking username in database...");
+        return _DbContext.UsersTable.Any(u => u.Username == username);
     }
 
-    public async Task<Users?> CheckPassword(string username, string password) {
-        return await _DbContext.Users
-            .FirstOrDefaultAsync(u => u.Name == username && u.Password == password);
+    public User? CheckPassword(string username, string password) {
+        Console.WriteLine("Checking password in database...");
+        return _DbContext.UsersTable
+            .FirstOrDefault(u => u.Username == username && u.Password == password);
+    }
+    
+    public void Create(User user) {
+        Console.WriteLine("Creating user in database...");
+        _DbContext.UsersTable.Add(user);
+        _DbContext.SaveChanges();
     }
 }
