@@ -37,7 +37,7 @@ public class MessageHandler : BackgroundService {
 
         messageClient.Listen<LoginReqMsg>(HandleLoginRequest, "UserService/login-request");
         
-        messageClient.Listen<CreateUserMsg>(HandleCreateUser, "UserService/login-request");
+        messageClient.Listen<CreateUserMsg>(HandleCreateUser, "UserService/Create-User");
 
         while (!stoppingToken.IsCancellationRequested) {
             await Task.Delay(1000, stoppingToken);

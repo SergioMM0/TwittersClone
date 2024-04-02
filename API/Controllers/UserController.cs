@@ -4,6 +4,8 @@ using RabbitMQMessages.User;
 
 namespace API.Controllers;
 
+[ApiController]
+[Route("[controller]")]
 public class UserController : ControllerBase {
 
     private readonly MessageClient _messageClient;
@@ -20,7 +22,7 @@ public class UserController : ControllerBase {
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     public async Task<IActionResult> Create([FromBody] NewUserDto newUserDto) {
-        var responseTask = _messageClient.ListenAsync<UserCreatedMsg>("API/UserCreated");
+        var responseTask = _messageClient.ListenAsync<UserCreatedMsg>("API/User-Created");
 
         _messageClient.Send(new CreateUserMsg() {
             Username = newUserDto.Username,
