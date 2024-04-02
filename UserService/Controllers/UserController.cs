@@ -9,14 +9,17 @@ namespace UserService.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController : ControllerBase {
+public class UserController : ControllerBase
+{
     private readonly UserManager _userManager;
-    
-    public UserController(UserManager userManager) {
+
+    public UserController(UserManager userManager)
+    {
         _userManager = userManager;
     }
-    
-    public void LocalTestAddUser() {
+
+    public void LocalTestAddUser()
+    {
         _userManager.LocalTestAddUser();
 
     }

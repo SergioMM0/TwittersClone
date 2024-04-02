@@ -30,7 +30,7 @@ public class AuthController : ControllerBase {
         }, "UserService/login-request");
 
         var response = await responseTask;
-        
+
         Console.WriteLine($"The API has received: {response.Token}");
 
         return response.Token switch {

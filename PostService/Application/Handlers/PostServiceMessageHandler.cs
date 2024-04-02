@@ -5,18 +5,22 @@ using RabbitMQMessages.Post;
 
 namespace PostService.Application.Handlers;
 
-public class PostServiceMessageHandler : BackgroundService {
+public class PostServiceMessageHandler : BackgroundService
+{
     private readonly PostManager _postManager;
-    
-    public PostServiceMessageHandler(PostManager postManager) {
+
+    public PostServiceMessageHandler(PostManager postManager)
+    {
         _postManager = postManager;
     }
-    
-    private void HandleCreatePost(CreatePostMsg msg) {
+
+    private void HandleCreatePost(CreatePostMsg msg)
+    {
         _postManager.CreatePost(msg.Body, msg.Username);
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
         Console.WriteLine("Message handler is running...");
 
         var messageClient = new MessageClient(
@@ -24,7 +28,8 @@ public class PostServiceMessageHandler : BackgroundService {
 
         messageClient.Listen<CreatePostMsg>(HandleCreatePost, "PostService/createPost");
 
-        while (!stoppingToken.IsCancellationRequested) {
+        while (!stoppingToken.IsCancellationRequested)
+        {
             await Task.Delay(1000, stoppingToken);
         }
         Console.WriteLine("Message handler is stopping...");

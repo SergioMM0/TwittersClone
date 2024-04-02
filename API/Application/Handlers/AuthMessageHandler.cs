@@ -11,7 +11,7 @@ public class AuthMessageHandler : BackgroundService {
         var messageClient = new MessageClient(
             RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest"));
 
-        
+
 
         while (!stoppingToken.IsCancellationRequested) {
             await Task.Delay(1000, stoppingToken);

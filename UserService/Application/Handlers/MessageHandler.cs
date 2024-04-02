@@ -6,40 +6,46 @@ using UserService.Core.Services;
 
 namespace UserService.Application.Handlers;
 
-public class MessageHandler : BackgroundService {
+public class MessageHandler : BackgroundService
+{
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public MessageHandler(IServiceScopeFactory scopeFactory) {
+    public MessageHandler(IServiceScopeFactory scopeFactory)
+    {
         _scopeFactory = scopeFactory;
     }
 
-    private void HandleLoginRequest(LoginReqMsg msg) {
+    private void HandleLoginRequest(LoginReqMsg msg)
+    {
         using var scope = _scopeFactory.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
-        
+
         Console.WriteLine("Checking user exists...");
         userManager.CheckUserExists(msg.Username, msg.Password);
     }
-    
-    private void HandleCreateUser(CreateUserMsg msg) {
+
+    private void HandleCreateUser(CreateUserMsg msg)
+    {
         using var scope = _scopeFactory.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
-        
+
         Console.WriteLine("Creating user...");
         userManager.CreateUser(msg.Username, msg.Password);
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
         Console.WriteLine("Message handler is running...");
 
         var messageClient = new MessageClient(
             RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest"));
 
         messageClient.Listen<LoginReqMsg>(HandleLoginRequest, "UserService/login-request");
-        
+
         messageClient.Listen<CreateUserMsg>(HandleCreateUser, "UserService/create-user");
 
-        while (!stoppingToken.IsCancellationRequested) {
+        while (!stoppingToken.IsCancellationRequested)
+        {
             await Task.Delay(1000, stoppingToken);
         }
         Console.WriteLine("Message handler is stopping...");
