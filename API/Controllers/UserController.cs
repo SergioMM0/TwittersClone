@@ -32,7 +32,7 @@ public class UserController : ControllerBase {
         var response = await responseTask;
 
         if (response.Success) {
-            return Ok("User with username: " + response.Username + "created successfully");
+            return Ok("User with username: " + response.Username + " created successfully");
         }
         return BadRequest("Couldn't create the user");
     }
