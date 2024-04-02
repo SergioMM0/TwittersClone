@@ -22,12 +22,12 @@ public class UserController : ControllerBase {
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     public async Task<IActionResult> Create([FromBody] NewUserDto newUserDto) {
-        var responseTask = _messageClient.ListenAsync<UserCreatedMsg>("API/User-Created");
+        var responseTask = _messageClient.ListenAsync<UserCreatedMsg>("API/user-created");
 
         _messageClient.Send(new CreateUserMsg() {
             Username = newUserDto.Username,
             Password = newUserDto.Password
-        }, "UserService/Create-User");
+        }, "UserService/create-user");
 
         var response = await responseTask;
 

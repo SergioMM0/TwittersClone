@@ -60,14 +60,14 @@ public class UserManager {
             _messageClient.Send(new UserCreatedMsg() {
                 Username = username,
                 Success = false
-            }, "API/UserCreated");
+            }, "API/user-created");
         }
         else {
             Console.WriteLine("User created successfully... sending response to API");
             _messageClient.Send(new UserCreatedMsg() {
                 Username = username,
                 Success = true
-            }, "API/UserCreated");
+            }, "API/user-created");
         }
     }
     
