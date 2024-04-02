@@ -17,8 +17,8 @@ public class UserController : ControllerBase {
     }
 
     [HttpPost]
-    public void test() {
-        _userManager.Test();
+    public void LocalTestAddUser() {
+        _userManager.LocalTestAddUser();
     }
     /*
     private readonly UserManager _userManager;

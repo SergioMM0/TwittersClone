@@ -1,5 +1,6 @@
 using EasyNetQ;
 using RabbitMQMessages.Login;
+using RabbitMQMessages.User;
 using UserService.Application.Clients;
 using UserService.Core.Services;
 
@@ -19,6 +20,14 @@ public class MessageHandler : BackgroundService {
         Console.WriteLine("Checking user exists...");
         userManager.CheckUserExists(msg.Username, msg.Password);
     }
+    
+    private void HandleCreateUser(CreateUserMsg msg) {
+        using var scope = _scopeFactory.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
+        
+        Console.WriteLine("Creating user...");
+        userManager.CreateUser(msg.Username, msg.Password);
+    }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
         Console.WriteLine("Message handler is running...");
@@ -27,6 +36,8 @@ public class MessageHandler : BackgroundService {
             RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest"));
 
         messageClient.Listen<LoginReqMsg>(HandleLoginRequest, "UserService/login-request");
+        
+        messageClient.Listen<CreateUserMsg>(HandleCreateUser, "UserService/login-request");
 
         while (!stoppingToken.IsCancellationRequested) {
             await Task.Delay(1000, stoppingToken);

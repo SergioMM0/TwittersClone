@@ -1,4 +1,5 @@
 ﻿using RabbitMQMessages.Login;
+using RabbitMQMessages.User;
 using UserService.Application.Clients;
 using UserService.Infrastructure.Repositories;
 using UserService.Core.Domain.Entities;
@@ -16,7 +17,7 @@ public class UserManager {
 
     
     public void CheckUserExists(string username, string password) {
-        Console.WriteLine("Inserted username: " + username + " password: " + password);
+        Console.WriteLine("Checking username: " + username + " and password: " + password);
         var userExists = _userRepository.CheckUserExists(username);
 
         Console.WriteLine("The user exists: " + userExists);
@@ -45,7 +46,32 @@ public class UserManager {
         }
     }
     
-    public void Test() {
+    public void CreateUser(string username, string password) {
+        Console.WriteLine("Creating user with username: " + username + " and password: " + password);
+        var user = new User() {
+            Username = username,
+            Password = password
+        };
+        
+        var result = _userRepository.Create(user);
+        
+        if (result is null) {
+            Console.WriteLine("User creation failed... sending response to API");
+            _messageClient.Send(new UserCreatedMsg() {
+                Username = username,
+                Success = false
+            }, "API/UserCreated");
+        }
+        else {
+            Console.WriteLine("User created successfully... sending response to API");
+            _messageClient.Send(new UserCreatedMsg() {
+                Username = username,
+                Success = true
+            }, "API/UserCreated");
+        }
+    }
+    
+    public void LocalTestAddUser() {
         var user = new User() {
             Username = "test",
             Password = "test"

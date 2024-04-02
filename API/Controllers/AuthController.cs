@@ -21,7 +21,6 @@ public class AuthController : ControllerBase {
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-
     public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto) {
         var responseTask = _messageClient.ListenAsync<LoginMsg>("Authentication/login-response");
 
@@ -40,7 +39,6 @@ public class AuthController : ControllerBase {
             "Incorrect password" => BadRequest("Incorrect password"),
             _ => Ok(response.Token)
         };
-
     }
 }
 
