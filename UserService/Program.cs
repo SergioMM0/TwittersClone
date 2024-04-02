@@ -2,10 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using UserService.Models;
 using UserService.Application.Clients;
 using UserService.Application.Handlers;
-using RabbitMQMessages;
 using EasyNetQ;
-using EasyNetQ.DI;
-using EasyNetQ.Serialization.NewtonsoftJson;
 using UserService.Core.Services;
 using UserService.Infrastructure.Repositories;
 
