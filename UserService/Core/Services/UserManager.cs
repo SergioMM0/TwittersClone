@@ -86,14 +86,58 @@ public class UserManager
         }
     }
 
-    public void LocalTestAddUser()
-    {
-        var user = new User()
-        {
+    public void GetById(int id) {
+        Console.WriteLine("Finding user with id: " + id);
+        var user = _userRepository.GetById(id);
+
+        if (user is null) {
+            Console.WriteLine("User not found... sending response to API");
+            _messageClient.Send(new UserMsg() {
+                Success = false
+            }, "API/getUser-response");
+        }
+        else {
+            Console.WriteLine("User found... sending response to API");
+            _messageClient.Send(new UserMsg() {
+                Success = true,
+                Id = id,
+                Username = user.Username
+            }, "API/getUser-response");
+        }
+    }
+
+    public void LocalTestAddUser() {
+        var user = new User() {
             Username = "test",
             Password = "test"
         };
 
         _userRepository.Create(user);
+    }
+    public void GetAllUsers() {
+        Console.WriteLine("Retrieving all users...");
+        var users = _userRepository.GetAllUsers();
+        
+        if (users.Count == 0) {
+            Console.WriteLine("No users found... sending response to API");
+            _messageClient.Send(new AllUsersMsg() {
+                Any = false
+            }, "API/getAllUsers-response");
+        }
+        else {
+            Console.WriteLine("Users found... sending response to API");
+            _messageClient.Send(new AllUsersMsg() {
+                Any = true,
+                Users = ListToMap(users)
+            }, "API/getAllUsers-response");
+        }
+    }
+    
+    private Dictionary<int, string> ListToMap(List<User> users) {
+        var map = new Dictionary<int, string>();
+        foreach (var user in users) {
+            map.Add(user.Id, user.Username);
+        }
+        return map;
     }
 }

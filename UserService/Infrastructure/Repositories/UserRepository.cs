@@ -40,5 +40,14 @@ public class UserRepository
             return null;
         }
     }
-
+    
+    public User? GetById(int id) {
+        Console.WriteLine("Getting user by id...");
+        return _dbContext.UsersTable.FirstOrDefault(u => u.Id == id);
+    }
+    
+    public List<User> GetAllUsers() {
+        Console.WriteLine("Getting all users...");
+        return _dbContext.UsersTable.ToList();
+    }
 }

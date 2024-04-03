@@ -36,6 +36,52 @@ public class UserController : ControllerBase {
         }
         return BadRequest("Couldn't create the user");
     }
+    
+    /// <summary>
+    /// Gets an user by it's id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+    public async Task<IActionResult> GetUserById([FromQuery] int id) {
+        var responseTask = _messageClient.ListenAsync<UserMsg>("API/getUser-response");
+
+        _messageClient.Send(new GetUserByIdMsg() {
+            Id = id
+        }, "UserService/getUser");
+
+        var response = await responseTask;
+
+        if (response.Success) {
+            return Ok("User with id :" + response.Id + " was found. Username: " + response.Username);
+        }
+        return NotFound("Couldn't find the user");
+    }
+    
+    /// <summary>
+    /// Gets all users in the system
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> GetAllUsers() {
+        var responseTask = _messageClient.ListenAsync<AllUsersMsg>("API/getAllUsers-response");
+
+        _messageClient.Send(new GetAllUsersMsg(), "UserService/getAllUsers");
+
+        var response = await responseTask;
+
+        if(!response.Any) {
+            return NoContent();
+        }
+
+        var users = response.Users.Aggregate("", (current, user) => current + ("Id: " + user.Key + " Username: " + user.Value + "\n"));
+
+        return Ok(users);
+    }
 
     public class NewUserDto {
         public required string Username { get; set; }
