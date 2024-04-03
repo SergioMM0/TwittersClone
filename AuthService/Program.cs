@@ -1,6 +1,4 @@
-﻿
-
-using AuthService.Application.Clients;
+﻿using AuthService.Application.Clients;
 using AuthService.Application.Handlers;
 using AuthService.Core.Services;
 using EasyNetQ;
@@ -23,7 +21,8 @@ var app = builder.Build();
 app.MapControllers();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()) {
+if (app.Environment.IsDevelopment())
+{
     app.UseSwagger();
     app.UseSwaggerUI();
 }

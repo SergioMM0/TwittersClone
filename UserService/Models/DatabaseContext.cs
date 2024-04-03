@@ -1,41 +1,28 @@
-using System;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
+using UserService.Core.Domain.Entities;
 
-namespace UserService.Models
+namespace UserService.Models;
+
+public class DatabaseContext : DbContext
 {
-    public class DatabaseContext : DbContext
+    public DbSet<User> UsersTable { get; set; }
+
+    public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
-        // Define the constructor
-        public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
-        {
-        }
-        // Define the OnConfiguring method
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                // Define the path for the SQLite database only if not configured by DI container
-                const string DatabasePath = "Data Source=/app/UserService/UsersDatabase/UsersDatabase.db";
-                optionsBuilder.UseSqlite(DatabasePath);
-            }
-        }
-    
-    // Define the DbSet for Users
-    public DbSet<Users> Users { get; set; }
+
     }
-    
-    // Define the Users class
-    public class Users
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        [Key]
-        public int Id { get; set; }
-        
-        [Required]
-        public string? Name { get; set; }
-        
-        [Required]
-        public string? Password { get; set; }
+        optionsBuilder.UseSqlite(
+            "Data Source=./UsersDatabase/db.db"
+        );
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<User>()
+            .Property(p => p.Id)
+            .ValueGeneratedOnAdd();
     }
 }

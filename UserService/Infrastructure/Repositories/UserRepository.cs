@@ -1,22 +1,44 @@
-﻿using Microsoft.EntityFrameworkCore;
-using UserService.Core.Domain.Entities;
+﻿using UserService.Core.Domain.Entities;
 using UserService.Models;
 
 namespace UserService.Infrastructure.Repositories;
 
-public class UserRepository {
-    private readonly DatabaseContext _DbContext;
+public class UserRepository
+{
+    private readonly DatabaseContext _dbContext;
 
-    public UserRepository(DatabaseContext context) {
-        _DbContext = context;
+    public UserRepository(DatabaseContext context)
+    {
+        _dbContext = context;
     }
 
-    public async Task<bool> CheckUserExists(string username) {
-        return await _DbContext.Users.AnyAsync(u => u.Name == username);
+    public bool CheckUserExists(string username)
+    {
+        Console.WriteLine("Checking username in database...");
+        return _dbContext.UsersTable.Any(u => u.Username == username);
     }
 
-    public async Task<Users?> CheckPassword(string username, string password) {
-        return await _DbContext.Users
-            .FirstOrDefaultAsync(u => u.Name == username && u.Password == password);
+    public User? CheckPassword(string username, string password)
+    {
+        Console.WriteLine("Checking password in database...");
+        return _dbContext.UsersTable
+            .FirstOrDefault(u => u.Username == username && u.Password == password);
     }
+
+    public User? Create(User user)
+    {
+        try
+        {
+            Console.WriteLine("Creating user in database...");
+            var result = _dbContext.UsersTable.Add(user);
+            _dbContext.SaveChanges();
+            return result.Entity;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+            return null;
+        }
+    }
+
 }
