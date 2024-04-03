@@ -25,19 +25,21 @@ public class FollowerController : ControllerBase {
             }
 
             // Check if the user exists
-            _messageClient.Send(new CheckUserIdExistsMsg { UserId = newFollower.UserId }, "UserService/check-existence");
-            var userExistsResponse = await _messageClient.ListenAsync<CheckUserIdExistsMsg>("API/user-exists-response");
+            var userExistsResponseTask = _messageClient.ListenAsync<CheckUserIdExistsMsg>("API/user-exists-response");
+            _messageClient.Send(new CheckUserIdExistsReqMsg { UserId = newFollower.UserId }, "UserService/user-exists-request");
+            var userExistsResponse = await userExistsResponseTask;
 
             if (!userExistsResponse.Exists) {
                 return BadRequest("Couldn't find the user to follow");
             }
 
             // Add the follower since the user exists
-            _messageClient.Send(new AddFollowerMsg { UserId = newFollower.UserId, FollowerId = newFollower.FollowerId }, "FollowingService/add-follower");
-            var followerAddedResponse = await _messageClient.ListenAsync<AddFollowerMsg>("API/follower-added-response");
+            var followerAddedResponseTask = _messageClient.ListenAsync<AddFollowerMsg>("API/follower-added-response");
+            _messageClient.Send(new AddFollowerReqMsg { UserId = newFollower.UserId, FollowerId = newFollower.FollowerId }, "FollowingService/follower-added-request");
+            var followerAddedResponse = await followerAddedResponseTask;
             
             if (!followerAddedResponse.FollowerAdded) {
-                return BadRequest("Couldn't add the follower");
+                return BadRequest("Couldn't add the follower, user already follows this person.");
             }
 
             return Ok("Follower added successfully");

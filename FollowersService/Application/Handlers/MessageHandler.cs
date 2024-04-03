@@ -12,7 +12,7 @@ public class MessageHandler : BackgroundService {
         _scopeFactory = scopeFactory;
     }
 
-    private void HandleAddFollowerMessage(AddFollowerMsg msg)
+    private void HandleAddFollowerMessage(AddFollowerReqMsg msg)
     {
         using var scope = _scopeFactory.CreateScope();
         var FollowingManager = scope.ServiceProvider.GetRequiredService<FollowingManager>();
@@ -27,7 +27,7 @@ public class MessageHandler : BackgroundService {
         var messageClient = new MessageClient(
             RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest"));
         
-        messageClient.Listen<AddFollowerMsg>(HandleAddFollowerMessage, "FollowingService/add-follower");
+        messageClient.Listen<AddFollowerReqMsg>(HandleAddFollowerMessage, "FollowingService/follower-added-request");
 
         while (!stoppingToken.IsCancellationRequested) {
             await Task.Delay(1000, stoppingToken);

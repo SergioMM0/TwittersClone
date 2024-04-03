@@ -17,6 +17,11 @@ public class FollowingManager {
         // Check to prevent adding the same follower more than once
         if (_followersRepository.FollowerExists(userId, followerId)) {
             Console.WriteLine($"Follower {followerId} already added to user {userId}.");
+            _messageClient.Send(new AddFollowerMsg() {
+                UserId = userId,
+                FollowerId = followerId,
+                FollowerAdded = false
+            }, "API/follower-added-response");
         return;
         }
         
