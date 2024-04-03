@@ -70,7 +70,7 @@ services:
       context: .
       dockerfile: NotificationService/Dockerfile
     ports:
-      - "8084:80"
+      - "84:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
     depends_on:
