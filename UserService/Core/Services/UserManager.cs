@@ -18,7 +18,7 @@ public class UserManager
     }
 
 
-    public void CheckUserExists(string username, string password)
+    public void HandleLogin(string username, string password)
     {
         Console.WriteLine("Checking username: " + username + " and password: " + password);
         var userExists = _userRepository.CheckUserExists(username);
@@ -139,5 +139,22 @@ public class UserManager
             map.Add(user.Id, user.Username);
         }
         return map;
+    }
+    
+    public void CheckUserExists(int id, string receiverTopic) {
+        var exists = _userRepository.CheckUserExists(id);
+
+        if (exists) {
+            Console.WriteLine("User exists!! Sending response back");
+            _messageClient.Send(new UserMsg() {
+                Success = true
+            }, receiverTopic);
+        }
+        else {
+            Console.WriteLine("User does not exist... Sending response back");
+            _messageClient.Send(new UserMsg() {
+                Success = false
+            }, receiverTopic);
+        }
     }
 }

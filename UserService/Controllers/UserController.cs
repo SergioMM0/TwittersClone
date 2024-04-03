@@ -35,7 +35,7 @@ public class UserController : ControllerBase
     // POST: Authenticate User
     [HttpPost("authenticate")]
     public IActionResult Authenticate([FromBody] LoginReqMsg LoginReqMsg) {
-        _ = _userManager.CheckUserExists(LoginReqMsg.Username, LoginReqMsg.Password);
+        _ = _userManager.HandleLogin(LoginReqMsg.Username, LoginReqMsg.Password);
         // Processes the authentication request
 
         return Accepted(new { Message = "Authentication request received. Processing..." });

@@ -5,22 +5,22 @@ using RabbitMQMessages.Post;
 
 namespace PostService.Application.Handlers;
 
-public class PostServiceMessageHandler : BackgroundService
-{
-    private readonly PostManager _postManager;
+public class PostServiceMessageHandler : BackgroundService {
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public PostServiceMessageHandler(PostManager postManager)
-    {
-        _postManager = postManager;
+    public PostServiceMessageHandler(IServiceScopeFactory scopeFactory) {
+        _scopeFactory = scopeFactory;
     }
 
-    private void HandleCreatePost(CreatePostMsg msg)
-    {
-        _postManager.CreatePost(msg.Body, msg.Username);
+    private void HandleCreatePost(CreatePostMsg msg) {
+        using var scope = _scopeFactory.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<PostManager>();
+
+        Console.WriteLine($"{nameof(PostServiceMessageHandler)}: Creating post...");
+        userManager.CreatePost(msg.Title, msg.Body, msg.AuthorId);
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
         Console.WriteLine("Message handler is running...");
 
         var messageClient = new MessageClient(
@@ -28,8 +28,7 @@ public class PostServiceMessageHandler : BackgroundService
 
         messageClient.Listen<CreatePostMsg>(HandleCreatePost, "PostService/createPost");
 
-        while (!stoppingToken.IsCancellationRequested)
-        {
+        while (!stoppingToken.IsCancellationRequested) {
             await Task.Delay(1000, stoppingToken);
         }
         Console.WriteLine("Message handler is stopping...");
