@@ -2,6 +2,6 @@
 
 public class CreatePostMsg
 {
-    public string Body { get; set; }
-    public string Username { get; set; }
+    public required string Body { get; set; }
+    public required string Username { get; set; }
 }
