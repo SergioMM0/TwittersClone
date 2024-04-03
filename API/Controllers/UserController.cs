@@ -64,7 +64,7 @@ public class UserController : ControllerBase {
     /// Gets all users in the system
     /// </summary>
     /// <returns></returns>
-    [HttpGet]
+    [HttpGet("all")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> GetAllUsers() {
