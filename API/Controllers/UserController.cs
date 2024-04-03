@@ -36,9 +36,33 @@ public class UserController : ControllerBase {
         }
         return BadRequest("Couldn't create the user");
     }
+    
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+    public async Task<IActionResult> GetUserById([FromBody] GetUserDto newUserDto) {
+        var responseTask = _messageClient.ListenAsync<UserMsg>("API/getUser-response");
+
+        _messageClient.Send(new GetUserByIdMsg() {
+            Id = newUserDto.Id
+        }, "UserService/getUser");
+
+        var response = await responseTask;
+
+        if (response.Success) {
+            return Ok("User with id :" + response.Id + " was found. Username: " + response.Username);
+        }
+        return NotFound("Couldn't find the user");
+    }
+    
+    
 
     public class NewUserDto {
         public required string Username { get; set; }
         public required string Password { get; set; }
+    }
+
+    public class GetUserDto {
+        public required int Id { get; set; }
     }
 }

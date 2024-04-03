@@ -20,17 +20,22 @@ public class UserRepository {
         return _dbContext.UsersTable
             .FirstOrDefault(u => u.Username == username && u.Password == password);
     }
-    
+
     public User? Create(User user) {
         try {
             Console.WriteLine("Creating user in database...");
             var result = _dbContext.UsersTable.Add(user);
             _dbContext.SaveChanges();
             return result.Entity;
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             Console.WriteLine($"An error occurred: {ex.Message}");
             return null;
         }
     }
 
+    public User? GetById(int id) {
+        Console.WriteLine("Getting user by id...");
+        return _dbContext.UsersTable.FirstOrDefault(u => u.Id == id);
+    }
 }

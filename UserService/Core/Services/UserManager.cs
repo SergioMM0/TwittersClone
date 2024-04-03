@@ -15,7 +15,7 @@ public class UserManager {
         _messageClient = messageClient;
     }
 
-    
+
     public void CheckUserExists(string username, string password) {
         Console.WriteLine("Checking username: " + username + " and password: " + password);
         var userExists = _userRepository.CheckUserExists(username);
@@ -45,16 +45,16 @@ public class UserManager {
             }, "AuthService/login-request");
         }
     }
-    
+
     public void CreateUser(string username, string password) {
         Console.WriteLine("Creating user with username: " + username + " and password: " + password);
         var user = new User() {
             Username = username,
             Password = password
         };
-        
+
         var result = _userRepository.Create(user);
-        
+
         if (result is null) {
             Console.WriteLine("User creation failed... sending response to API");
             _messageClient.Send(new UserCreatedMsg() {
@@ -70,7 +70,27 @@ public class UserManager {
             }, "API/user-created");
         }
     }
-    
+
+    public void GetById(int id) {
+        Console.WriteLine("Finding user with id: " + id);
+        var user = _userRepository.GetById(id);
+
+        if (user is null) {
+            Console.WriteLine("User not found... sending response to API");
+            _messageClient.Send(new UserMsg() {
+                Success = false
+            }, "API/getUserById-response");
+        }
+        else {
+            Console.WriteLine("User found... sending response to API");
+            _messageClient.Send(new UserMsg() {
+                Success = true,
+                Id = id,
+                Username = user.Username
+            }, "API/getUserById-response");
+        }
+    }
+
     public void LocalTestAddUser() {
         var user = new User() {
             Username = "test",

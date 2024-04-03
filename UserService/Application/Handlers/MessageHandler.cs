@@ -17,7 +17,7 @@ public class MessageHandler : BackgroundService {
         using var scope = _scopeFactory.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
         
-        Console.WriteLine("Checking user exists...");
+        Console.WriteLine($"{nameof(MessageHandler)}: Checking user exists...");
         userManager.CheckUserExists(msg.Username, msg.Password);
     }
     
@@ -25,8 +25,16 @@ public class MessageHandler : BackgroundService {
         using var scope = _scopeFactory.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
         
-        Console.WriteLine("Creating user...");
+        Console.WriteLine($"{nameof(MessageHandler)}:Creating user...");
         userManager.CreateUser(msg.Username, msg.Password);
+    }
+    
+    private void HandleGetUserById(GetUserByIdMsg byIdMsg) {
+        using var scope = _scopeFactory.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
+        
+        Console.WriteLine($"{nameof(MessageHandler)}:Finding user...");
+        userManager.GetById(byIdMsg.Id);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
@@ -38,6 +46,8 @@ public class MessageHandler : BackgroundService {
         messageClient.Listen<LoginReqMsg>(HandleLoginRequest, "UserService/login-request");
         
         messageClient.Listen<CreateUserMsg>(HandleCreateUser, "UserService/create-user");
+        
+        messageClient.Listen<GetUserByIdMsg>(HandleGetUserById, "UserService/getUser");
 
         while (!stoppingToken.IsCancellationRequested) {
             await Task.Delay(1000, stoppingToken);
