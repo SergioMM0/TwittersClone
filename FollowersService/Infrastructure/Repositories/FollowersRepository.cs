@@ -12,6 +12,11 @@ public class FollowersRepository
         _dbContext = context;
     }
 
+    public bool FollowerExists(int userId, int followerId)
+    {
+        return _dbContext.FollowersTable.Any(f => f.UserId == userId && f.FollowerId == followerId);
+    }
+
     public Follower? Create(Follower Follower)
     {
         try

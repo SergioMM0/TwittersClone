@@ -29,7 +29,7 @@ public class UserManager
             {
                 UserId = userId,
                 Exists = false
-            }, "API/user-exists");
+            }, "API/user-exists-response");
             return;
         }
         Console.WriteLine("User was found... sending response to API");
@@ -37,7 +37,7 @@ public class UserManager
         {
             UserId = userId,
             Exists = true
-        }, "API/user-exists");
+        }, "API/user-exists-response");
     }
 
     public void CheckUserExists(string username, string password)

@@ -14,6 +14,12 @@ public class FollowingManager {
     }
 
     public void AddFollower(int userId, int followerId) {
+        // Check to prevent adding the same follower more than once
+        if (_followersRepository.FollowerExists(userId, followerId)) {
+            Console.WriteLine($"Follower {followerId} already added to user {userId}.");
+        return;
+        }
+        
         Console.WriteLine("Adding follower with ID: " + followerId + " to user with ID: " + userId);
         var follower = new Follower {
                 UserId = userId,
@@ -27,14 +33,14 @@ public class FollowingManager {
                 UserId = userId,
                 FollowerId = followerId,
                 FollowerAdded = false
-            }, "API/follower-added");
+            }, "API/follower-added-response");
         } else {
             Console.WriteLine("Follower added successfully... sending response to API");
             _messageClient.Send(new AddFollowerMsg() {
                 UserId = userId,
                 FollowerId = followerId,
                 FollowerAdded = true
-            }, "API/follower-added");
+            }, "API/follower-added-response");
         }
     }
 }

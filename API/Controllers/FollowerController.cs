@@ -20,27 +20,23 @@ public class FollowerController : ControllerBase {
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         public async Task<IActionResult> AddFollowerAsync([FromBody] NewFollowerDto newFollower) {
-            var responseTaskUserExists = _messageClient.ListenAsync<CheckUserIdExistsMsg>("API/user-exists");
-            var responseTaskFollowerAdded = _messageClient.ListenAsync<AddFollowerMsg>("API/add-follower");
-
             if (newFollower.UserId == 0 || newFollower.FollowerId == 0) {
                 return BadRequest("Invalid user or follower ID.");
             }
 
-            // Send a message to check if the user exists.
+            // Check if the user exists
             _messageClient.Send(new CheckUserIdExistsMsg { UserId = newFollower.UserId }, "UserService/check-existence");
+            var userExistsResponse = await _messageClient.ListenAsync<CheckUserIdExistsMsg>("API/user-exists-response");
 
-            var responseUser = await responseTaskUserExists;
-
-            if (!responseUser.Exists) {
+            if (!userExistsResponse.Exists) {
                 return BadRequest("Couldn't find the user to follow");
             }
 
+            // Add the follower since the user exists
             _messageClient.Send(new AddFollowerMsg { UserId = newFollower.UserId, FollowerId = newFollower.FollowerId }, "FollowingService/add-follower");
-
-            var responseFollower = await responseTaskFollowerAdded;
+            var followerAddedResponse = await _messageClient.ListenAsync<AddFollowerMsg>("API/follower-added-response");
             
-            if (!responseFollower.FollowerAdded) {
+            if (!followerAddedResponse.FollowerAdded) {
                 return BadRequest("Couldn't add the follower");
             }
 
