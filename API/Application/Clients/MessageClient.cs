@@ -13,6 +13,10 @@ public class MessageClient {
         _bus.PubSub.Publish(message, topic);
     }
 
+    public void Send(string topic) {
+        _bus.PubSub.Publish(topic);
+    }
+
     public void Listen<T>(Action<T> handler, string topic) {
         _bus.PubSub.Subscribe<T>(topic, handler);
     }
