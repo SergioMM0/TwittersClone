@@ -52,7 +52,7 @@ public class PostManager {
             AuthorId = authorId
         };
         
-        var result = await _postRepository.AttachAsync(post);
+        var result = _postRepository.Attach(post);
 
         if (result is null)
         {
