@@ -79,19 +79,21 @@ services:
       rabbitmq:
         condition: service_healthy
   #      
-  #post-service:
-  #  image: post-service
-  #  build:
-  #    context: .
-  #    dockerfile: PostService/Dockerfile
-  #  ports:
-  #    - "85:80"
-  #  environment:
-  #    ASPNETCORE_ENVIRONMENT: Production
-  #  depends_on:
-  #    rabbitmq:
-  #      condition: service_healthy
-  #
+  post-service:
+    image: post-service
+    build:
+      context: .
+      dockerfile: PostService/Dockerfile
+    volumes:
+      - ./PostService/PostDatabase:/app/PostDatabase
+    ports:
+      - "85:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+  
   #search-service:
   #  image: search-service
   #  build:

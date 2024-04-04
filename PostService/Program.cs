@@ -1,7 +1,10 @@
 ﻿using EasyNetQ;
+using Microsoft.EntityFrameworkCore;
 using PostService.Application.Clients;
 using PostService.Application.Handlers;
 using PostService.Core.Services;
+using PostService.Infrastructure.Context;
+using PostService.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,18 +12,29 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
 
-builder.Services.AddSingleton(new MessageClient(RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest")));
+builder.Services.AddDbContext<DatabaseContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteDatabasePath")));
+
+builder.Services.AddSingleton(
+    new MessageClient(RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest")));
 builder.Services.AddHostedService<PostServiceMessageHandler>();
 builder.Services.AddScoped<PostManager>();
+builder.Services.AddScoped<PostRepository>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+    dbContext.Database.Migrate();
 }
+
+// Configure the HTTP request pipeline.
+app.MapControllers();
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.Run();
