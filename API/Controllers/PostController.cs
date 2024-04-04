@@ -44,7 +44,7 @@ public class PostController : ControllerBase{
     [HttpDelete]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-    public async Task<IActionResult> DeletePost([FromBody] DeletePostDto deletePostDto){
+    public async Task<IActionResult> Delete([FromBody] DeletePostDto deletePostDto){
         var responseTask = _messageClient.ListenAsync<PostDeletedMsg>("API/post-deleted");
 
         _messageClient.Send(new DeletePostMsg(){
@@ -57,6 +57,29 @@ public class PostController : ControllerBase{
             return BadRequest(response.Reason);
         }
         return Ok("Post with title: " + response.Title + " deleted successfully");
+    }
+    
+    /// <summary>
+    /// Creates a post in the system
+    /// </summary>
+    /// <returns>string - If the post got created or not, it's title, author and comments</returns>
+    [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+    public async Task<IActionResult> GetById([FromQuery] int id){
+        var responseTask = _messageClient.ListenAsync<PostMsg>("API/GetPostById-response");
+
+        _messageClient.Send(new GetPostById(){
+            Id = id
+        }, "PostService/getPostById");
+
+        var response = await responseTask;
+
+        if(!response.Success) {
+            return BadRequest(response.Reason);
+        }
+        return Ok("Found post with title: " + response.Title + " and body: " + 
+                  response.Body + " and authorId: " + response.AuthorId + " that belongs to id: " + response.Id);
     }
 }
 

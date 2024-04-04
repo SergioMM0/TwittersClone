@@ -27,6 +27,14 @@ public class PostServiceMessageHandler : BackgroundService {
         Console.WriteLine($"{nameof(PostServiceMessageHandler)}: Deleting post...");
         userManager.DeletePost(msg.Id);
     }
+    
+    private void HandleGetPostById(GetPostById msg) {
+        using var scope = _scopeFactory.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<PostManager>();
+
+        Console.WriteLine($"{nameof(PostServiceMessageHandler)}: Getting post by id: {msg.Id} ...");
+        userManager.GetPostById(msg.Id);
+    }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
         Console.WriteLine("Message handler is running...");
@@ -37,6 +45,8 @@ public class PostServiceMessageHandler : BackgroundService {
         messageClient.Listen<CreatePostMsg>(HandleCreatePost, "PostService/createPost");
         
         messageClient.Listen<DeletePostMsg>(HandleDeletePost, "PostService/deletePost");
+        
+        messageClient.Listen<GetPostById>(HandleGetPostById, "PostService/getPostById");
 
         while (!stoppingToken.IsCancellationRequested) {
             await Task.Delay(1000, stoppingToken);

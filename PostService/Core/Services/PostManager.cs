@@ -106,4 +106,28 @@ public class PostManager {
             Title = post.Title
         }, "API/post-deleted");
     }
+    public void GetPostById(int postId) {
+        var post = _postRepository.GetById(postId);
+        
+        if (post is null) {
+            Console.WriteLine("Post with id: " + postId + " not found... sending response to API");
+            _messageClient.Send(new PostMsg()
+            {
+                Success = false,
+                Reason = "Post with given id not found"
+            }, "API/GetPostById-response");
+            return;
+        }
+        
+        Console.WriteLine("Found post with title: " + post.Title + " and body: " + post.Body + " and authorId: " + post.AuthorId + " that belongs to id: " + post.Id);
+        
+        _messageClient.Send(new PostMsg()
+        {
+            Success = true,
+            Id = post.Id,
+            Title = post.Title,
+            Body = post.Body,
+            AuthorId = post.AuthorId
+        }, "API/GetPostById-response");
+    }
 }
