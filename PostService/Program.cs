@@ -17,7 +17,8 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteDatabasePath")));
 
-builder.Services.AddScoped( _ => new MessageClient(RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest")));
+builder.Services.AddSingleton(
+    new MessageClient(RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest")));
 builder.Services.AddHostedService<PostServiceMessageHandler>();
 builder.Services.AddScoped<PostManager>();
 builder.Services.AddScoped<PostRepository>();
