@@ -20,6 +20,15 @@ public class MessageHandler : BackgroundService {
         Console.WriteLine("Creating follower...");
         FollowingManager.AddFollower(msg.UserId, msg.FollowerId);
     }
+
+    private void HandleFetchFollowersMessage(FetchFollowersReqMsg msg)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var FollowingManager = scope.ServiceProvider.GetRequiredService<FollowingManager>();
+
+        Console.WriteLine("Fetching followers...");
+        FollowingManager.FetchFollowers(msg.UserId);
+    }
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
         Console.WriteLine("Message handler is running...");
@@ -28,6 +37,7 @@ public class MessageHandler : BackgroundService {
             RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest"));
         
         messageClient.Listen<AddFollowerReqMsg>(HandleAddFollowerMessage, "FollowingService/follower-added-request");
+        messageClient.Listen<FetchFollowersReqMsg>(HandleFetchFollowersMessage, "FollowingService/fetch-followers-request");
 
         while (!stoppingToken.IsCancellationRequested) {
             await Task.Delay(1000, stoppingToken);

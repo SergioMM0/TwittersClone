@@ -1,4 +1,5 @@
 namespace RabbitMQMessages.Follow;
 public class FetchFollowersMsg {
-    public required List<int> UserIds { get; set; } = new List<int>();
+    public required int UserId { get; set; }
+    public required List<int> FollowerIds { get; set; }
 }

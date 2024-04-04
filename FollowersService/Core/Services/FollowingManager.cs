@@ -48,4 +48,13 @@ public class FollowingManager {
             }, "API/follower-added-response");
         }
     }
+
+    public void FetchFollowers(int userId) {
+        var followers = _followersRepository.GetFollowers(userId);
+        Console.WriteLine("Fetching followers for user with ID: " + userId);
+        _messageClient.Send(new FetchFollowersMsg() {
+            UserId = userId,
+            FollowerIds = new List<int>(followers)
+        }, "API/fetch-followers-response");
+    }
 }

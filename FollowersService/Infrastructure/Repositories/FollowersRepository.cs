@@ -33,4 +33,12 @@ public class FollowersRepository
         }
     }
 
+    public List<int> GetFollowers(int userId)
+    {
+        return _dbContext.FollowersTable
+            .Where(f => f.UserId == userId)
+            .Select(f => f.FollowerId)
+            .ToList();
+    }
+
 }

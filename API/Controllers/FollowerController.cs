@@ -44,6 +44,36 @@ public class FollowerController : ControllerBase {
 
             return Ok("Follower added successfully");
     }
+
+    // get all followers of a user
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+    public async Task<IActionResult> GetFollowersAsync([FromQuery] int userId) {
+        if (userId == 0) {
+            return BadRequest("Invalid user ID.");
+        }
+
+        // Check if the user exists
+        var userExistsResponseTask = _messageClient.ListenAsync<CheckUserIdExistsMsg>("API/user-exists-response");
+        _messageClient.Send(new CheckUserIdExistsReqMsg { UserId = userId }, "UserService/user-exists-request");
+        var userExistsResponse = await userExistsResponseTask;
+
+        if (!userExistsResponse.Exists) {
+            return BadRequest("Couldn't find the user to get followers");
+        }
+
+        // Get the followers of the user
+        var fetchFollowersResponseTask = _messageClient.ListenAsync<FetchFollowersMsg>("API/fetch-followers-response");
+        _messageClient.Send(new FetchFollowersReqMsg { UserId = userId }, "FollowingService/fetch-followers-request");
+        var fetchFollowersResponse = await fetchFollowersResponseTask;
+
+        if (fetchFollowersResponse.FollowerIds.Count == 0) {
+            return Ok("Followers: 0");
+        }
+
+        return Ok(fetchFollowersResponse.FollowerIds);
+    }
 }
 
 public class NewFollowerDto {
