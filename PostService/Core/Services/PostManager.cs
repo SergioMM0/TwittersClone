@@ -151,4 +151,22 @@ public class PostManager {
             Posts = posts.ToDictionary(post => post.Id, post => post.Title)
         }, "API/getAllPosts-response");
     }
+    public void CheckExists(int msgId, string msgReceiverTopic) {
+        var post = _postRepository.GetById(msgId);
+        
+        if (post is null) {
+            Console.WriteLine("Post with id: " + msgId + " not found... sending response back...");
+            _messageClient.Send(new ResponsePostExists()
+            {
+                Success = false
+            }, msgReceiverTopic);
+            return;
+        }
+        
+        Console.WriteLine("Post with id: " + msgId + " found... sending response back...");
+        _messageClient.Send(new ResponsePostExists()
+        {
+            Success = true
+        }, msgReceiverTopic);
+    }
 }
