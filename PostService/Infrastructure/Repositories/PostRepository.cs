@@ -44,4 +44,8 @@ public class PostRepository {
             Console.WriteLine($"Stack trace: {ex.StackTrace}");
         }
     }
+    
+    public List<Post> GetAll() {
+        return _dbContext.PostsTable.ToList();
+    }
 }

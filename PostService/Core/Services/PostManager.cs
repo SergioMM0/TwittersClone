@@ -130,4 +130,25 @@ public class PostManager {
             AuthorId = post.AuthorId
         }, "API/GetPostById-response");
     }
+    public void GetAllPosts() {
+        var posts = _postRepository.GetAll();
+        
+        if (posts.Count == 0) {
+            Console.WriteLine("No posts found... sending response to API");
+            _messageClient.Send(new AllPostMsg()
+            {
+                Success = false,
+                Reason = "No posts found"
+            }, "API/getAllPosts-response");
+            return;
+        }
+        
+        Console.WriteLine("Found " + posts.Count + " posts");
+        
+        _messageClient.Send(new AllPostMsg()
+        {
+            Success = true,
+            Posts = posts.ToDictionary(post => post.Id, post => post.Title)
+        }, "API/getAllPosts-response");
+    }
 }

@@ -81,6 +81,29 @@ public class PostController : ControllerBase{
         return Ok("Found post with title: " + response.Title + " and body: " + 
                   response.Body + " and authorId: " + response.AuthorId + " that belongs to id: " + response.Id);
     }
+    
+    /// <summary>
+    /// Gets all posts
+    /// </summary>
+    /// <returns>string - The post</returns>
+    [HttpGet("all")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+    public async Task<IActionResult> GetAll(){
+        var responseTask = _messageClient.ListenAsync<AllPostMsg>("API/getAllPosts-response");
+
+        _messageClient.Send(new GetAllPostMsg(), "PostService/getAllPosts");
+
+        var response = await responseTask;
+
+        if(!response.Success) {
+            return BadRequest(response.Reason);
+        }
+        
+        var posts = response.Posts.Aggregate("", (current, post) => current + ("Id: " + post.Key + " Title: " + post.Value + "\n"));
+        
+        return Ok(posts);
+    }
 }
 
 public class NewPostDto{
