@@ -5,31 +5,60 @@ using RabbitMQMessages.Post;
 
 namespace PostService.Application.Handlers;
 
-public class PostServiceMessageHandler : BackgroundService
-{
-    private readonly PostManager _postManager;
+public class PostServiceMessageHandler : BackgroundService {
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public PostServiceMessageHandler(PostManager postManager)
-    {
-        _postManager = postManager;
+    public PostServiceMessageHandler(IServiceScopeFactory scopeFactory) {
+        _scopeFactory = scopeFactory;
     }
 
-    private void HandleCreatePost(CreatePostMsg msg)
-    {
-        _postManager.CreatePost(msg.Body, msg.Username);
+    private async void HandleCreatePost(CreatePostMsg msg) {
+        using var scope = _scopeFactory.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<PostManager>();
+
+        Console.WriteLine($"{nameof(PostServiceMessageHandler)}: Creating post...");
+         await userManager.CreatePost(msg.Title, msg.Body, msg.AuthorId);
+    }
+    
+    private void HandleDeletePost(DeletePostMsg msg) {
+        using var scope = _scopeFactory.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<PostManager>();
+
+        Console.WriteLine($"{nameof(PostServiceMessageHandler)}: Deleting post...");
+        userManager.DeletePost(msg.Id);
+    }
+    
+    private void HandleGetPostById(GetPostById msg) {
+        using var scope = _scopeFactory.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<PostManager>();
+
+        Console.WriteLine($"{nameof(PostServiceMessageHandler)}: Getting post by id: {msg.Id} ...");
+        userManager.GetPostById(msg.Id);
+    }
+    
+    private void HandleGetAllPost(GetAllPostMsg msg) {
+        using var scope = _scopeFactory.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<PostManager>();
+
+        Console.WriteLine($"{nameof(PostServiceMessageHandler)}: Getting all posts...");
+        userManager.GetAllPosts();
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
         Console.WriteLine("Message handler is running...");
 
         var messageClient = new MessageClient(
             RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest"));
 
         messageClient.Listen<CreatePostMsg>(HandleCreatePost, "PostService/createPost");
+        
+        messageClient.Listen<DeletePostMsg>(HandleDeletePost, "PostService/deletePost");
+        
+        messageClient.Listen<GetPostById>(HandleGetPostById, "PostService/getPostById");
+        
+        messageClient.Listen<GetAllPostMsg>(HandleGetAllPost, "PostService/getAllPosts");
 
-        while (!stoppingToken.IsCancellationRequested)
-        {
+        while (!stoppingToken.IsCancellationRequested) {
             await Task.Delay(1000, stoppingToken);
         }
         Console.WriteLine("Message handler is stopping...");

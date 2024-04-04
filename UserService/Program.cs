@@ -20,7 +20,7 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 // Add services
 
 builder.Services.AddSingleton(new MessageClient(RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest")));
-builder.Services.AddHostedService<MessageHandler>();
+builder.Services.AddHostedService<UserServiceMessageHandler>();
 builder.Services.AddScoped<UserManager>();
 builder.Services.AddScoped<UserRepository>();
 

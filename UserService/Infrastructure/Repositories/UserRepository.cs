@@ -18,6 +18,11 @@ public class UserRepository
         return _dbContext.UsersTable.Any(u => u.Username == username);
     }
 
+    public bool CheckUserExists(int id) {
+        Console.WriteLine("Checking id from user in database...");
+        return _dbContext.UsersTable.Any(u => u.Id == id);
+    }
+
     public User? CheckPassword(string username, string password)
     {
         Console.WriteLine("Checking password in database...");
