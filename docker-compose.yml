@@ -25,18 +25,18 @@ services:
       rabbitmq:
         condition: service_healthy
   
-  auth-service:
-    image: auth-service
-    build:
-      context: .
-      dockerfile: AuthService/Dockerfile
-    ports:
-      - "81:80"
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
+  #auth-service:
+  #  image: auth-service
+  #  build:
+  #    context: .
+  #    dockerfile: AuthService/Dockerfile
+  #  ports:
+  #    - "81:80"
+  #  environment:
+  #    ASPNETCORE_ENVIRONMENT: Production
+  #  depends_on:
+  #    rabbitmq:
+  #      condition: service_healthy
 
   #followers-service:
   #  image: followers-service
@@ -51,19 +51,21 @@ services:
   #    rabbitmq:
   #      condition: service_healthy
 
-  #like-service:
-  #  image: like-service
-  #  build:
-  #    context: .
-  #    dockerfile: LikeService/Dockerfile
-  #  ports:
-  #    - "83:80"
-  #  environment:
-  #    ASPNETCORE_ENVIRONMENT: Production
-  #  depends_on:
-  #    rabbitmq:
-  #      condition: service_healthy
-  #
+  like-service:
+    image: like-service
+    build:
+      context: .
+      dockerfile: LikeService/Dockerfile
+    ports:
+      - "83:80"
+    volumes:
+      - ./LikeService/LikeDatabase:/app/LikeDatabase
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+  
   #notification-service:
   #  image: notification-service
   #  build:
