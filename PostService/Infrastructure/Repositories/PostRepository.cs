@@ -10,7 +10,7 @@ public class PostRepository {
         _dbContext = context;
     }
     
-    public async Task<Post?> CreateAsync(Post post) {
+    public async Task<Post?> AttachAsync(Post post) {
         try {
             Console.WriteLine("Creating post in database...");
             _dbContext.PostsTable.Attach(post);
