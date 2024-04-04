@@ -12,12 +12,12 @@ public class PostServiceMessageHandler : BackgroundService {
         _scopeFactory = scopeFactory;
     }
 
-    private void HandleCreatePost(CreatePostMsg msg) {
+    private async void HandleCreatePost(CreatePostMsg msg) {
         using var scope = _scopeFactory.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<PostManager>();
 
         Console.WriteLine($"{nameof(PostServiceMessageHandler)}: Creating post...");
-         userManager.CreatePost(msg.Title, msg.Body, msg.AuthorId);
+         await userManager.CreatePost(msg.Title, msg.Body, msg.AuthorId);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) {

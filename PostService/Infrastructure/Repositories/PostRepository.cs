@@ -10,7 +10,7 @@ public class PostRepository {
         _dbContext = context;
     }
     
-    public Post? Attach(Post post) {
+    public Post? Add(Post post) {
         try {
             Console.WriteLine("Creating post in database...");
             _dbContext.PostsTable.Add(post);
@@ -18,6 +18,7 @@ public class PostRepository {
             return post;
         } catch (Exception ex) {
             Console.WriteLine($"An error occurred: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
             return null;
         }
     }

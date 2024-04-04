@@ -1,7 +1,9 @@
 ﻿
+using EasyNetQ;
 using Microsoft.AspNetCore.Mvc;
 using PostService.Application.Clients;
 using PostService.Core.Entities;
+using PostService.Infrastructure.Context;
 using PostService.Infrastructure.Repositories;
 using RabbitMQMessages.Post;
 using RabbitMQMessages.User;
@@ -11,13 +13,17 @@ namespace PostService.Core.Services;
 public class PostManager {
     private readonly PostRepository _postRepository;
     private readonly MessageClient _messageClient;
+    private readonly DatabaseContext _db;
     
-    public PostManager(PostRepository postRepository, MessageClient messageClient) {
+    public PostManager(PostRepository postRepository, DatabaseContext db) {
         _postRepository = postRepository;
-        _messageClient = messageClient;
+        // Create a new message client for EF context issue
+        _messageClient = new MessageClient(
+            RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest"));
+        _db = db;
     }
 
-    public async void CreatePost(string title, string body, int authorId) {
+    public async Task CreatePost(string title, string body, int authorId) {
         var receiverTopic = "PostService/checkUserExists-response";
         var task = _messageClient.ListenAsync<ResponseUserExistsMsg>(receiverTopic);
         
@@ -52,7 +58,7 @@ public class PostManager {
             AuthorId = authorId
         };
         
-        var result = _postRepository.Attach(post);
+        var result = _postRepository.Add(post);
 
         if (result is null)
         {
