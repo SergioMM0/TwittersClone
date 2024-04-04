@@ -41,4 +41,25 @@ public class FollowersRepository
             .ToList();
     }
 
+    public bool DeleteFollower(int userId, int followerId)
+    {
+        try
+        {
+            Console.WriteLine("Deleting follower from database...");
+            var follower = _dbContext.FollowersTable.FirstOrDefault(f => f.UserId == userId && f.FollowerId == followerId);
+            if (follower is null)
+            {
+                return false;
+            }
+            _dbContext.FollowersTable.Remove(follower);
+            _dbContext.SaveChanges();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+            return false;
+        }
+    }
+
 }

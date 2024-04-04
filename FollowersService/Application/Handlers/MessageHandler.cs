@@ -29,6 +29,15 @@ public class MessageHandler : BackgroundService {
         Console.WriteLine("Fetching followers...");
         FollowingManager.FetchFollowers(msg.UserId);
     }
+
+    private void HandleDeleteFollowerMessage(DeleteFollowerReqMsg msg)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var FollowingManager = scope.ServiceProvider.GetRequiredService<FollowingManager>();
+
+        Console.WriteLine("Deleting follower...");
+        FollowingManager.DeleteFollower(msg.UserId, msg.FollowerId);
+    }
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
         Console.WriteLine("Message handler is running...");
@@ -38,6 +47,7 @@ public class MessageHandler : BackgroundService {
         
         messageClient.Listen<AddFollowerReqMsg>(HandleAddFollowerMessage, "FollowingService/follower-added-request");
         messageClient.Listen<FetchFollowersReqMsg>(HandleFetchFollowersMessage, "FollowingService/fetch-followers-request");
+        messageClient.Listen<DeleteFollowerReqMsg>(HandleDeleteFollowerMessage, "FollowingService/follower-deleted-request");
 
         while (!stoppingToken.IsCancellationRequested) {
             await Task.Delay(1000, stoppingToken);

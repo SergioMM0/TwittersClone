@@ -74,6 +74,34 @@ public class FollowerController : ControllerBase {
 
         return Ok(fetchFollowersResponse.FollowerIds);
     }
+    [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+    public async Task<IActionResult> DeleteFollowerAsync([FromBody] NewFollowerDto newFollower) {
+        if (newFollower.UserId == 0 || newFollower.FollowerId == 0) {
+            return BadRequest("Invalid user or follower ID.");
+        }
+
+        // Check if the user exists
+        var userExistsResponseTask = _messageClient.ListenAsync<CheckUserIdExistsMsg>("API/user-exists-response");
+        _messageClient.Send(new CheckUserIdExistsReqMsg { UserId = newFollower.UserId }, "UserService/user-exists-request");
+        var userExistsResponse = await userExistsResponseTask;
+
+        if (!userExistsResponse.Exists) {
+            return BadRequest("Couldn't find the user to delete follower");
+        }
+
+        // Delete the follower since the user exists
+        var followerDeletedResponseTask = _messageClient.ListenAsync<DeleteFollowerMsg>("API/follower-deleted-response");
+        _messageClient.Send(new DeleteFollowerReqMsg { UserId = newFollower.UserId, FollowerId = newFollower.FollowerId }, "FollowingService/follower-deleted-request");
+        var followerDeletedResponse = await followerDeletedResponseTask;
+        
+        if (!followerDeletedResponse.FollowerDeleted) {
+            return BadRequest("Couldn't delete the follower, user doesn't follow this person");
+        }
+
+        return Ok("Follower deleted successfully");
+    }
 }
 
 public class NewFollowerDto {

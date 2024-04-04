@@ -57,4 +57,26 @@ public class FollowingManager {
             FollowerIds = new List<int>(followers)
         }, "API/fetch-followers-response");
     }
+
+    public void DeleteFollower(int userId, int followerId) {
+        Console.WriteLine("Deleting follower with ID: " + followerId + " from user with ID: " + userId);
+       
+        var result = _followersRepository.DeleteFollower(userId, followerId);
+
+        if (result) {
+            Console.WriteLine("Follower deleted successfully... sending response to API");
+            _messageClient.Send(new DeleteFollowerMsg() {
+                UserId = userId,
+                FollowerId = followerId,
+                FollowerDeleted = true
+            }, "API/follower-deleted-response");
+        } else {
+            Console.WriteLine("Follower deletion failed... sending response to API");
+            _messageClient.Send(new DeleteFollowerMsg() {
+                UserId = userId,
+                FollowerId = followerId,
+                FollowerDeleted = false
+            }, "API/follower-deleted-response");
+        }
+    }
 }
