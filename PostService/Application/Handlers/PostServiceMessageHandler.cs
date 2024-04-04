@@ -19,6 +19,14 @@ public class PostServiceMessageHandler : BackgroundService {
         Console.WriteLine($"{nameof(PostServiceMessageHandler)}: Creating post...");
          await userManager.CreatePost(msg.Title, msg.Body, msg.AuthorId);
     }
+    
+    private void HandleDeletePost(DeletePostMsg msg) {
+        using var scope = _scopeFactory.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<PostManager>();
+
+        Console.WriteLine($"{nameof(PostServiceMessageHandler)}: Deleting post...");
+        userManager.DeletePost(msg.Id);
+    }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
         Console.WriteLine("Message handler is running...");
@@ -27,6 +35,8 @@ public class PostServiceMessageHandler : BackgroundService {
             RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest"));
 
         messageClient.Listen<CreatePostMsg>(HandleCreatePost, "PostService/createPost");
+        
+        messageClient.Listen<DeletePostMsg>(HandleDeletePost, "PostService/deletePost");
 
         while (!stoppingToken.IsCancellationRequested) {
             await Task.Delay(1000, stoppingToken);

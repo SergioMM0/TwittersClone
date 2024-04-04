@@ -22,4 +22,26 @@ public class PostRepository {
             return null;
         }
     }
+    
+    public Post? GetById(int postId) {
+        try {
+            Console.WriteLine("Getting post from database...");
+            return _dbContext.PostsTable.FirstOrDefault(p => p.Id == postId);
+        } catch (Exception ex) {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+            return null;
+        }
+    }
+    
+    public void Delete(Post post) {
+        try {
+            Console.WriteLine("Deleting post from database...");
+            _dbContext.PostsTable.Remove(post);
+            _dbContext.SaveChanges();
+        } catch (Exception ex) {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+        }
+    }
 }

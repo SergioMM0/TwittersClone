@@ -82,4 +82,28 @@ public class PostManager {
             }, "API/post-created");
         }
     }
+    public void DeletePost(int postId) {
+        var post = _postRepository.GetById(postId);
+        
+        if (post is null) {
+            Console.WriteLine("Post with id: " + postId + " not found... sending response to API");
+            _messageClient.Send(new PostDeletedMsg()
+            {
+                Success = false,
+                Reason = "Post with given id not found"
+            }, "API/post-deleted");
+            return;
+        }
+        
+        Console.WriteLine("Deleting post with title: " + post.Title + " , body: " + post.Body + " and authorId: " + post.AuthorId);
+
+        _postRepository.Delete(post);
+        
+        Console.WriteLine("Post deleted successfully... sending response to API");
+        _messageClient.Send(new PostDeletedMsg()
+        {
+            Success = true,
+            Title = post.Title
+        }, "API/post-deleted");
+    }
 }
