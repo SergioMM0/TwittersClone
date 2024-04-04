@@ -13,7 +13,7 @@ public class PostRepository {
     public async Task<Post?> CreateAsync(Post post) {
         try {
             Console.WriteLine("Creating post in database...");
-            var result = _dbContext.PostsTable.AddAsync(post);
+            _dbContext.PostsTable.Attach(post);
             await _dbContext.SaveChangesAsync();
             return post;
         } catch (Exception ex) {

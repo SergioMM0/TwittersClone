@@ -1,6 +1,8 @@
 ﻿
+using Microsoft.AspNetCore.Mvc;
 using PostService.Application.Clients;
 using PostService.Core.Entities;
+using PostService.Infrastructure.Context;
 using PostService.Infrastructure.Repositories;
 using RabbitMQMessages.Post;
 using RabbitMQMessages.User;
@@ -10,11 +12,12 @@ namespace PostService.Core.Services;
 public class PostManager {
     private readonly PostRepository _postRepository;
     private readonly MessageClient _messageClient;
+    private readonly DatabaseContext _dbContext;
     
-    public PostManager(PostRepository postRepository, MessageClient messageClient) {
+    public PostManager(PostRepository postRepository, MessageClient messageClient, DatabaseContext dbContext) {
         _postRepository = postRepository;
         _messageClient = messageClient;
-        
+        _dbContext = dbContext;
     }
 
     public async void CreatePost(string title, string body, int authorId) {
@@ -44,14 +47,14 @@ public class PostManager {
         }
         
         Console.WriteLine("Creating post with title: " + title + " , body: " + body + " and authorId: " + authorId);
-        
+
         var post = new Post()
         {
             Title = title,
             Body = body,
             AuthorId = authorId
         };
-
+        
         var result = await _postRepository.CreateAsync(post);
 
         if (result is null)

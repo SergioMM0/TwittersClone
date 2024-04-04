@@ -17,7 +17,7 @@ public class PostServiceMessageHandler : BackgroundService {
         var userManager = scope.ServiceProvider.GetRequiredService<PostManager>();
 
         Console.WriteLine($"{nameof(PostServiceMessageHandler)}: Creating post...");
-        userManager.CreatePost(msg.Title, msg.Body, msg.AuthorId);
+         userManager.CreatePost(msg.Title, msg.Body, msg.AuthorId);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
