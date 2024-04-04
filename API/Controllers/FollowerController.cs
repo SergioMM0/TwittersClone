@@ -35,7 +35,7 @@ public class FollowerController : ControllerBase {
 
             // Add the follower since the user exists
             var followerAddedResponseTask = _messageClient.ListenAsync<AddFollowerMsg>("API/follower-added-response");
-            _messageClient.Send(new AddFollowerReqMsg { UserId = newFollower.UserId, FollowerId = newFollower.FollowerId }, "FollowingService/follower-added-request");
+            _messageClient.Send(new AddFollowerReqMsg { UserId = newFollower.UserId, FollowerId = newFollower.FollowerId, ListenToNotifications = true}, "FollowingService/follower-added-request");
             var followerAddedResponse = await followerAddedResponseTask;
             
             if (!followerAddedResponse.FollowerAdded) {
@@ -77,7 +77,36 @@ public class FollowerController : ControllerBase {
     [HttpDelete]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-    public async Task<IActionResult> DeleteFollowerAsync([FromBody] NewFollowerDto newFollower) {
+    public async Task<IActionResult> DeleteFollowerAsync([FromQuery] int userId, [FromQuery] int followerId)
+    {
+        if (userId == 0 || followerId == 0) {
+            return BadRequest("Invalid user or follower ID.");
+        }
+
+        // Check if the user exists
+        var userExistsResponseTask = _messageClient.ListenAsync<CheckUserIdExistsMsg>("API/user-exists-response");
+        _messageClient.Send(new CheckUserIdExistsReqMsg {UserId = userId}, "UserService/user-exists-request");
+        var userExistsResponse = await userExistsResponseTask;
+
+        if (!userExistsResponse.Exists) {
+            return BadRequest("Couldn't find the user to delete follower");
+        }
+
+        // Delete the follower since the user exists
+        var followerDeletedResponseTask = _messageClient.ListenAsync<DeleteFollowerMsg>("API/follower-deleted-response");
+        _messageClient.Send(new DeleteFollowerReqMsg { UserId = userId, FollowerId = followerId}, "FollowingService/follower-deleted-request");
+        var followerDeletedResponse = await followerDeletedResponseTask;
+        
+        if (!followerDeletedResponse.FollowerDeleted) {
+            return BadRequest("Couldn't delete the follower, user doesn't follow this person");
+        }
+
+        return Ok("Follower deleted successfully");
+    }
+    [HttpPut]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+    public async Task<IActionResult> ToggleNotificationAsync([FromBody] NewFollowerDto newFollower) {
         if (newFollower.UserId == 0 || newFollower.FollowerId == 0) {
             return BadRequest("Invalid user or follower ID.");
         }
@@ -88,23 +117,23 @@ public class FollowerController : ControllerBase {
         var userExistsResponse = await userExistsResponseTask;
 
         if (!userExistsResponse.Exists) {
-            return BadRequest("Couldn't find the user to delete follower");
+            return BadRequest("Couldn't find the user to update follower");
         }
 
-        // Delete the follower since the user exists
-        var followerDeletedResponseTask = _messageClient.ListenAsync<DeleteFollowerMsg>("API/follower-deleted-response");
-        _messageClient.Send(new DeleteFollowerReqMsg { UserId = newFollower.UserId, FollowerId = newFollower.FollowerId }, "FollowingService/follower-deleted-request");
-        var followerDeletedResponse = await followerDeletedResponseTask;
+        // Toggle the notification setting for the follower since the user exists
+        var followerUpdatedResponseTask = _messageClient.ListenAsync<ToggleNotificationMsg>("API/toggle-notification-response");
+        _messageClient.Send(new ToggleNotificationReqMsg { UserId = newFollower.UserId, FollowerId = newFollower.FollowerId}, "FollowingService/toggle-notification-request");
+        var followerUpdatedResponse = await followerUpdatedResponseTask;
         
-        if (!followerDeletedResponse.FollowerDeleted) {
-            return BadRequest("Couldn't delete the follower, user doesn't follow this person");
+        if (!followerUpdatedResponse.NotificationToggled) {
+            return BadRequest("Couldn't toggle the notification setting for the follower.");
         }
-
-        return Ok("Follower deleted successfully");
+        return Ok("Notification setting successfully toggled to: " + followerUpdatedResponse.ListenToNotifications);
     }
 }
 
 public class NewFollowerDto {
     public int UserId { get; set; }
     public int FollowerId { get; set; }
+    public bool ListenToNotifications { get; set; }
 }

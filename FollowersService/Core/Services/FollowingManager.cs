@@ -28,7 +28,8 @@ public class FollowingManager {
         Console.WriteLine("Adding follower with ID: " + followerId + " to user with ID: " + userId);
         var follower = new Follower {
                 UserId = userId,
-                FollowerId = followerId
+                FollowerId = followerId,
+                ListenToNotifications = true
         };
         var result = _followersRepository.Create(follower);
 
@@ -79,4 +80,35 @@ public class FollowingManager {
             }, "API/follower-deleted-response");
         }
     }
+
+    public void ToggleNotification(int userId, int followerId) {
+    var result = _followersRepository.ToggleNotification(userId, followerId, out bool newState);
+    if (result) {
+        _messageClient.Send(new ToggleNotificationMsg() {
+            UserId = userId,
+            FollowerId = followerId,
+            ListenToNotifications = newState, // Use the returned state
+            NotificationToggled = true
+        }, "API/toggle-notification-response");
+    } else {
+            Console.WriteLine("Notification toggle failed... sending response to API");
+            _messageClient.Send(new ToggleNotificationMsg() {
+                UserId = userId,
+                FollowerId = followerId,
+                ListenToNotifications = true, // Default value
+                NotificationToggled = false
+            }, "API/toggle-notification-response");
+        }
+    }
+
+    public void FetchNotifListeners(int userId) {
+    var notifListeners = _followersRepository.GetNotifListeners(userId);
+    Console.WriteLine($"Fetching notification listeners for user with ID: {userId}");
+
+    // Send the response to the Notification service
+    _messageClient.Send(new FetchNotifListenersMsg() {
+        UserId = userId,
+        NotifListeners = notifListeners
+    }, "FollowingService/fetch-notif-listeners-response");
+}
 }

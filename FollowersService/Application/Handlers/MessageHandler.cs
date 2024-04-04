@@ -38,6 +38,24 @@ public class MessageHandler : BackgroundService {
         Console.WriteLine("Deleting follower...");
         FollowingManager.DeleteFollower(msg.UserId, msg.FollowerId);
     }
+
+    private void HandleToggleNotificationMessage(ToggleNotificationReqMsg msg)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var FollowingManager = scope.ServiceProvider.GetRequiredService<FollowingManager>();
+
+        Console.WriteLine("Toggling notification...");
+        FollowingManager.ToggleNotification(msg.UserId, msg.FollowerId);
+    }
+
+    private void HandleFetchNotifListenersMessage(FetchNotifListenersReqMsg msg)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var FollowingManager = scope.ServiceProvider.GetRequiredService<FollowingManager>();
+
+        Console.WriteLine("Fetching notification listeners...");
+        FollowingManager.FetchNotifListeners(msg.UserId);
+    }
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
         Console.WriteLine("Message handler is running...");
@@ -48,6 +66,8 @@ public class MessageHandler : BackgroundService {
         messageClient.Listen<AddFollowerReqMsg>(HandleAddFollowerMessage, "FollowingService/follower-added-request");
         messageClient.Listen<FetchFollowersReqMsg>(HandleFetchFollowersMessage, "FollowingService/fetch-followers-request");
         messageClient.Listen<DeleteFollowerReqMsg>(HandleDeleteFollowerMessage, "FollowingService/follower-deleted-request");
+        messageClient.Listen<ToggleNotificationReqMsg>(HandleToggleNotificationMessage, "FollowingService/toggle-notification-request");
+        messageClient.Listen<FetchNotifListenersReqMsg>(HandleFetchNotifListenersMessage, "FollowingService/fetch-notif-listeners-request");
 
         while (!stoppingToken.IsCancellationRequested) {
             await Task.Delay(1000, stoppingToken);
