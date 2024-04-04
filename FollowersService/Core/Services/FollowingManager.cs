@@ -109,6 +109,6 @@ public class FollowingManager {
     _messageClient.Send(new FetchNotifListenersMsg() {
         UserId = userId,
         NotifListeners = notifListeners
-    }, "FollowingService/fetch-notif-listeners-response");
+    }, "NotificationService/fetch-notif-listeners-response");
 }
 }

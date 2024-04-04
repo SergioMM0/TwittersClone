@@ -6,4 +6,5 @@ namespace RabbitMQMessages.Notification;
         public required List<int> FollowerId { get; set; }
         public required int PostId { get; set; }
         public required string Message { get; set; }
+        public bool NotificationSent { get; set; }
     }

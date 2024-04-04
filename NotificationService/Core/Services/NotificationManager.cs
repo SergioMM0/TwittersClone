@@ -5,31 +5,48 @@ using NotificationService.Application.Clients;
 using RabbitMQMessages.Follow;
 using RabbitMQMessages.Notification;
 
-namespace NotificationService.Core.Services; 
-public class NotificationManager {
+namespace NotificationService.Core.Services;
+public class NotificationManager
+{
     private readonly MessageClient _messageClient;
 
-    public NotificationManager(MessageClient messageClient) {
+    public NotificationManager(MessageClient messageClient)
+    {
         _messageClient = messageClient;
     }
 
-    public void SendNotificationMsg(int userId, int postId) {
-        // Fetch all the listening followers of the user
-        _messageClient.Send(new FetchNotifListenersReqMsg() {
-            UserId = userId
-        }, "FollowingService/fetch-notif-listeners-request");
-        _messageClient.Listen<FetchNotifListenersMsg>(HandleFetchNotifListenersResponse, "FollowingService/fetch-notif-listeners-response");
+    public async Task<bool> SendNotificationMsg(int userId, int postId)
+    {
+        var tcs = new TaskCompletionSource<bool>();
 
-        void HandleFetchNotifListenersResponse(FetchNotifListenersMsg msg) {
-            // Send the notification to all the listeners
-            foreach (var listener in msg.NotifListeners) {
-                _messageClient.Send(new SendNotificationMsg() {
-                    UserId = userId,
-                    PostId = postId,
-                    FollowerId = msg.NotifListeners,
-                    Message = userId +" posted a new post with id "+ postId +"!"
-                }, "NotificationService/send-notification-request");
+        void HandleFetchNotifListenersResponse(FetchNotifListenersMsg msg)
+        {
+            try
+            {
+                foreach (var listenerId in msg.NotifListeners)
+                {
+                    // Assuming Send is synchronous and there's no async version
+                    _messageClient.Send(new ReceiveNotificationMsg
+                    {
+                        UserId = listenerId,
+                        Message = $"User {userId} posted a new post with id {postId}!",
+                        NotificationSent = true
+                    }, "NotificationService/send-notification-response");
+                }
+                tcs.SetResult(true); // Notify the task completion
+            }
+            catch (Exception ex)
+            {
+                tcs.SetException(ex); // Pass any exceptions to the Task
             }
         }
+
+        // Setup listening before sending the request to ensure it's ready to catch the response
+        _messageClient.Listen<FetchNotifListenersMsg>(HandleFetchNotifListenersResponse, "NotificationService/fetch-notif-listeners-response");
+
+        // Send request
+        _messageClient.Send(new FetchNotifListenersReqMsg { UserId = userId }, "FollowingService/fetch-notif-listeners-request");
+
+        return await tcs.Task; // Wait here until HandleFetchNotifListenersResponse signals completion
     }
 }
