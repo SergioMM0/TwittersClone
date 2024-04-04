@@ -6,11 +6,11 @@ using UserService.Core.Services;
 
 namespace UserService.Application.Handlers;
 
-public class MessageHandler : BackgroundService
+public class UserServiceMessageHandler : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public MessageHandler(IServiceScopeFactory scopeFactory)
+    public UserServiceMessageHandler(IServiceScopeFactory scopeFactory)
     {
         _scopeFactory = scopeFactory;
     }
@@ -29,7 +29,7 @@ public class MessageHandler : BackgroundService
         using var scope = _scopeFactory.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
         
-        Console.WriteLine($"{nameof(MessageHandler)}: Creating user...");
+        Console.WriteLine($"{nameof(UserServiceMessageHandler)}: Creating user...");
         userManager.CreateUser(msg.Username, msg.Password);
     }
     
@@ -37,7 +37,7 @@ public class MessageHandler : BackgroundService
         using var scope = _scopeFactory.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
         
-        Console.WriteLine($"{nameof(MessageHandler)}: Finding user...");
+        Console.WriteLine($"{nameof(UserServiceMessageHandler)}: Finding user...");
         userManager.GetById(byIdMsg.Id);
     }
     
@@ -45,7 +45,7 @@ public class MessageHandler : BackgroundService
         using var scope = _scopeFactory.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
         
-        Console.WriteLine($"{nameof(MessageHandler)}: Retrieving all users...");
+        Console.WriteLine($"{nameof(UserServiceMessageHandler)}: Retrieving all users...");
         userManager.GetAllUsers();
     }
     
@@ -53,7 +53,7 @@ public class MessageHandler : BackgroundService
         using var scope = _scopeFactory.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
         
-        Console.WriteLine($"{nameof(MessageHandler)}: Checking if user exists...");
+        Console.WriteLine($"{nameof(UserServiceMessageHandler)}: Checking if user exists...");
         userManager.CheckUserExists(msg.Id, msg.ReceiverTopic);
     }
 

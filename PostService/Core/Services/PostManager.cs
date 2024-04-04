@@ -18,7 +18,7 @@ public class PostManager {
     }
 
     public async void CreatePost(string title, string body, int authorId) {
-        var receiverTopic = "PostManager/checkUserExists-response";
+        var receiverTopic = "PostService/checkUserExists-response";
         var task = _messageClient.ListenAsync<ResponseUserExistsMsg>(receiverTopic);
         
         Console.WriteLine("Checking that user with id: " + authorId + " exists...");
@@ -34,7 +34,7 @@ public class PostManager {
         Console.WriteLine("User exists: " + userExists.Success);
 
         if (!userExists.Success) {
-            Console.WriteLine("Post was not found... sending response to API");
+            Console.WriteLine("User was not found... sending response to API");
             _messageClient.Send(new PostCreatedMsg()
             {
                 Success = false,

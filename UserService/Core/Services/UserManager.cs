@@ -144,6 +144,7 @@ public class UserManager
     public void CheckUserExists(int id, string receiverTopic) {
         var exists = _userRepository.CheckUserExists(id);
 
+        Console.WriteLine(receiverTopic);
         if (exists) {
             Console.WriteLine("User exists!! Sending response back");
             _messageClient.Send(new UserMsg() {
