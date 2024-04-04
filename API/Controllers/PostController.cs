@@ -38,9 +38,9 @@ public class PostController : ControllerBase{
     }
     
     /// <summary>
-    /// Creates a post in the system
+    /// Deletes a post in the system
     /// </summary>
-    /// <returns>string - If the post got created or not, it's title, author and comments</returns>
+    /// <returns>string - If the post got deleted or not and it's title</returns>
     [HttpDelete]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
@@ -60,10 +60,10 @@ public class PostController : ControllerBase{
     }
     
     /// <summary>
-    /// Creates a post in the system
+    /// Gets a post by it's id
     /// </summary>
-    /// <returns>string - If the post got created or not, it's title, author and comments</returns>
-    [HttpDelete]
+    /// <returns>string - The post</returns>
+    [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     public async Task<IActionResult> GetById([FromQuery] int id){
