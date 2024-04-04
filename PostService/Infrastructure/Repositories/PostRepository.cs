@@ -10,12 +10,12 @@ public class PostRepository {
         _dbContext = context;
     }
     
-    public Post? Create(Post post) {
+    public async Task<Post?> CreateAsync(Post post) {
         try {
             Console.WriteLine("Creating post in database...");
-            var result = _dbContext.PostsTable.Add(post);
-            _dbContext.SaveChanges();
-            return result.Entity;
+            var result = _dbContext.PostsTable.AddAsync(post);
+            await _dbContext.SaveChangesAsync();
+            return post;
         } catch (Exception ex) {
             Console.WriteLine($"An error occurred: {ex.Message}");
             return null;

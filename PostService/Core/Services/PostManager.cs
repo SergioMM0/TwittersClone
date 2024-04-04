@@ -44,6 +44,7 @@ public class PostManager {
         }
         
         Console.WriteLine("Creating post with title: " + title + " , body: " + body + " and authorId: " + authorId);
+        
         var post = new Post()
         {
             Title = title,
@@ -51,7 +52,7 @@ public class PostManager {
             AuthorId = authorId
         };
 
-        var result = _postRepository.Create(post);
+        var result = await _postRepository.CreateAsync(post);
 
         if (result is null)
         {

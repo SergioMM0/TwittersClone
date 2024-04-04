@@ -21,7 +21,7 @@ public class PostController : ControllerBase{
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     public async Task<IActionResult> Create([FromBody] NewPostDto newPostDto){
-        var responseTask = _messageClient.ListenAsync<PostCreatedMsg>("PostService/createPost-response");
+        var responseTask = _messageClient.ListenAsync<PostCreatedMsg>("API/post-created");
 
         _messageClient.Send(new CreatePostMsg(){
             Title = newPostDto.Title,

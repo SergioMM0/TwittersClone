@@ -147,13 +147,13 @@ public class UserManager
         Console.WriteLine(receiverTopic);
         if (exists) {
             Console.WriteLine("User exists!! Sending response back");
-            _messageClient.Send(new UserMsg() {
+            _messageClient.Send(new ResponseUserExistsMsg() {
                 Success = true
             }, receiverTopic);
         }
         else {
             Console.WriteLine("User does not exist... Sending response back");
-            _messageClient.Send(new UserMsg() {
+            _messageClient.Send(new ResponseUserExistsMsg() {
                 Success = false
             }, receiverTopic);
         }
