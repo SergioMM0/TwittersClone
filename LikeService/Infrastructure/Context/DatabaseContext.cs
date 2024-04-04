@@ -5,7 +5,7 @@ namespace LikeService.Infrastructure.Context;
 
 public class DatabaseContext : DbContext
 {
-    public DbSet<Like> LikeTable { get; set; }
+    public DbSet<Like> LikesTable { get; set; }
 
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
