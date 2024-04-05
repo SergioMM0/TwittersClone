@@ -17,11 +17,9 @@ public class PostManager {
     private readonly IPostRepository _postRepository;
     private readonly IMessageClient _messageClient;
     
-    public PostManager(IPostRepository postRepository) {
+    public PostManager(IPostRepository postRepository, IMessageClient messageClient) {
         _postRepository = postRepository;
-        // Create a new message client for EF context issue
-        _messageClient = new MessageClient(
-            RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest"));
+        _messageClient = messageClient;
     }
 
     public async Task CreatePost(string title, string body, int authorId) {
