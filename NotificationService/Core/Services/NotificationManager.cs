@@ -2,6 +2,7 @@
 using EasyNetQ;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using NotificationService.Application.Clients;
+using NotificationService.Application.Interfaces.Clients;
 using RabbitMQMessages.Follow;
 using RabbitMQMessages.Post;
 using RabbitMQMessages.Notification;
@@ -9,9 +10,9 @@ using RabbitMQMessages.Notification;
 namespace NotificationService.Core.Services;
 public class NotificationManager
 {
-    private readonly MessageClient _messageClient;
+    private readonly IMessageClient _messageClient;
 
-    public NotificationManager(MessageClient messageClient)
+    public NotificationManager(IMessageClient messageClient)
     {
         _messageClient = messageClient;
     }
