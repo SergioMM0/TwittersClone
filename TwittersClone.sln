@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# 
+#
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{3506F1DB-615E-4F25-A825-37ADCE94B75E}"
@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{7CB78AF7-9
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMQMessages", "RabbitMQMessages\RabbitMQMessages.csproj", "{A1C4328C-C223-43ED-80C0-4E541D149344}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Tests", "UserService.Tests\UserService.Tests.csproj", "{924FE36D-1055-41FB-BA9B-9494121CF116}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,6 +64,10 @@ Global
 		{A1C4328C-C223-43ED-80C0-4E541D149344}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1C4328C-C223-43ED-80C0-4E541D149344}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1C4328C-C223-43ED-80C0-4E541D149344}.Release|Any CPU.Build.0 = Release|Any CPU
+		{924FE36D-1055-41FB-BA9B-9494121CF116}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{924FE36D-1055-41FB-BA9B-9494121CF116}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{924FE36D-1055-41FB-BA9B-9494121CF116}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{924FE36D-1055-41FB-BA9B-9494121CF116}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

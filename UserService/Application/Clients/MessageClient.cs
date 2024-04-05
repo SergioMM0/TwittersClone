@@ -1,8 +1,9 @@
 using EasyNetQ;
+using UserService.Application.Interfaces.Clients;
 
 namespace UserService.Application.Clients;
 
-public class MessageClient
+public class MessageClient : IMessageClient
 {
     private readonly IBus _bus;
 
