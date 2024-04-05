@@ -2,6 +2,8 @@
 using EasyNetQ;
 using Microsoft.AspNetCore.Mvc;
 using PostService.Application.Clients;
+using PostService.Application.Interfaces.Clients;
+using PostService.Application.Interfaces.Repositories;
 using PostService.Core.Entities;
 using PostService.Infrastructure.Context;
 using PostService.Infrastructure.Repositories;
@@ -12,16 +14,14 @@ using RabbitMQMessages.Notification;
 namespace PostService.Core.Services;
 
 public class PostManager {
-    private readonly PostRepository _postRepository;
-    private readonly MessageClient _messageClient;
-    private readonly DatabaseContext _db;
+    private readonly IPostRepository _postRepository;
+    private readonly IMessageClient _messageClient;
     
-    public PostManager(PostRepository postRepository, DatabaseContext db) {
+    public PostManager(IPostRepository postRepository) {
         _postRepository = postRepository;
         // Create a new message client for EF context issue
         _messageClient = new MessageClient(
             RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest"));
-        _db = db;
     }
 
     public async Task CreatePost(string title, string body, int authorId) {
