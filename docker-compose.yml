@@ -38,18 +38,20 @@ services:
       rabbitmq:
         condition: service_healthy
 
-  #followers-service:
-  #  image: followers-service
-  #  build:
-  #    context: .
-  #    dockerfile: FollowersService/Dockerfile
-  #  ports:
-  #    - "82:80"
-  #  environment:
-  #    ASPNETCORE_ENVIRONMENT: Production
-  #  depends_on:
-  #    rabbitmq:
-  #      condition: service_healthy
+  followers-service:
+    image: followers-service
+    build:
+      context: .
+      dockerfile: FollowersService/Dockerfile
+    volumes:
+      - ./FollowersService/FollowersDatabase:/app/FollowersDatabase
+    ports:
+      - "82:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   like-service:
     image: like-service
@@ -66,19 +68,19 @@ services:
       rabbitmq:
         condition: service_healthy
   
-  #notification-service:
-  #  image: notification-service
-  #  build:
-  #    context: .
-  #    dockerfile: NotificationService/Dockerfile
-  #  ports:
-  #    - "84:80"
-  #  environment:
-  #    ASPNETCORE_ENVIRONMENT: Production
-  #  depends_on:
-  #    rabbitmq:
-  #      condition: service_healthy
-  #      
+  notification-service:
+    image: notification-service
+    build:
+      context: .
+      dockerfile: NotificationService/Dockerfile
+    ports:
+      - "84:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+       
   post-service:
     image: post-service
     build:
@@ -94,19 +96,6 @@ services:
       rabbitmq:
         condition: service_healthy
   
-  #search-service:
-  #  image: search-service
-  #  build:
-  #    context: .
-  #    dockerfile: SearchService/Dockerfile
-  #  ports:
-  #    - "86:80"
-  #  environment:
-  #    ASPNETCORE_ENVIRONMENT: Production
-  #  depends_on:
-  #    rabbitmq:
-  #      condition: service_healthy
-  #
   user-service:
     image: user-service
     build:

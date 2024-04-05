@@ -7,6 +7,7 @@ using PostService.Infrastructure.Context;
 using PostService.Infrastructure.Repositories;
 using RabbitMQMessages.Post;
 using RabbitMQMessages.User;
+using RabbitMQMessages.Notification;
 
 namespace PostService.Core.Services;
 
@@ -80,6 +81,13 @@ public class PostManager {
                 Body = result.Body,
                 AuthorId = result.AuthorId
             }, "API/post-created");
+
+            // Send a notification to listeners of this user
+            Console.WriteLine("Sending notification to listeners of user with id: " + authorId);
+            _messageClient.Send(new SendNotificationReqMsg() {
+                UserId = authorId,
+                PostId = result.Id
+            }, "NotificationService/send-notification-request");
         }
     }
     public void DeletePost(int postId) {
@@ -168,5 +176,28 @@ public class PostManager {
         {
             Success = true
         }, msgReceiverTopic);
+    }
+    public void GetPostAuthorById(int Id) {
+        var post = _postRepository.GetById(Id);
+        
+        if (post is null) {
+            Console.WriteLine("Post with id: " + Id + " not found...");
+            _messageClient.Send(new PostAuthorMsg()
+            {
+                Success = false,
+                Reason = "Post with given id not found",
+                AuthorId = -1
+            }, "Notification/getPostAuthorById-response");
+            return;
+        }
+        
+        Console.WriteLine("Found post with title: " + post.Title + " and body: " + post.Body + " and authorId: " + post.AuthorId + " that belongs to id: " + post.Id);
+        
+        _messageClient.Send(new PostAuthorMsg()
+        {
+            Success = true,
+            Reason = "",
+            AuthorId = post.AuthorId
+        }, "Notification/getPostAuthorById-response");
     }
 }

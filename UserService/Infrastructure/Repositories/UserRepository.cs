@@ -11,7 +11,15 @@ public class UserRepository : IUserRepository {
         _dbContext = context;
     }
 
-    public bool CheckUserExists(string username) {
+
+    public bool CheckUserIdExists(int userId)
+    {
+        Console.WriteLine("Checking user id in database...");
+        return _dbContext.UsersTable.Any(u => u.Id == userId);
+    }
+
+    public bool CheckUserExists(string username)
+    {
         Console.WriteLine("Checking username in database...");
         return _dbContext.UsersTable.Any(u => u.Username == username);
     }

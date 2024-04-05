@@ -15,6 +15,15 @@ public class UserServiceMessageHandler : BackgroundService
         _scopeFactory = scopeFactory;
     }
 
+    private void CheckUserIdExists(CheckUserIdExistsReqMsg msg)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
+
+        Console.WriteLine("Checking existence of user...");
+        userManager.CheckUserIdExists(msg.UserId);
+    }
+
     private void HandleLoginRequest(LoginReqMsg msg)
     {
         using var scope = _scopeFactory.CreateScope();
@@ -74,6 +83,8 @@ public class UserServiceMessageHandler : BackgroundService
         messageClient.Listen<GetAllUsersMsg>(HandleGetAllUsers, "UserService/getAllUsers");
         
         messageClient.Listen<UserExistsReqMsg>(HandleCheckUserExists, "UserService/checkUserExists");
+
+        messageClient.Listen<CheckUserIdExistsReqMsg>(CheckUserIdExists, "UserService/user-exists-request");
 
         while (!stoppingToken.IsCancellationRequested)
         {
