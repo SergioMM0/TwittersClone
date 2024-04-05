@@ -30,6 +30,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FollowersService.Tests", "F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService.Tests", "NotificationService.Tests\NotificationService.Tests.csproj", "{4514DCBB-892A-4D17-A50D-CB25C5D65B1D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostService.Tests", "PostService.Tests\PostService.Tests.csproj", "{A7E6E1DD-AD29-48EA-9F33-5BEAA99E98C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LikeService.Tests", "LikeService.Tests\LikeService.Tests.csproj", "{E3C4F951-4E9A-42B3-B9E0-24C8D052806E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +76,14 @@ Global
 		{924FE36D-1055-41FB-BA9B-9494121CF116}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{924FE36D-1055-41FB-BA9B-9494121CF116}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{924FE36D-1055-41FB-BA9B-9494121CF116}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7E6E1DD-AD29-48EA-9F33-5BEAA99E98C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7E6E1DD-AD29-48EA-9F33-5BEAA99E98C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7E6E1DD-AD29-48EA-9F33-5BEAA99E98C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7E6E1DD-AD29-48EA-9F33-5BEAA99E98C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3C4F951-4E9A-42B3-B9E0-24C8D052806E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3C4F951-4E9A-42B3-B9E0-24C8D052806E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3C4F951-4E9A-42B3-B9E0-24C8D052806E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3C4F951-4E9A-42B3-B9E0-24C8D052806E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B5374208-2681-4DAC-B15E-FBE1A51D2358}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B5374208-2681-4DAC-B15E-FBE1A51D2358}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5374208-2681-4DAC-B15E-FBE1A51D2358}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using PostService.Application.Clients;
 using PostService.Application.Handlers;
+using PostService.Application.Interfaces.Clients;
+using PostService.Application.Interfaces.Repositories;
 using PostService.Core.Services;
 using PostService.Infrastructure.Context;
 using PostService.Infrastructure.Repositories;
@@ -17,11 +19,11 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteDatabasePath")));
 
-builder.Services.AddSingleton(
+builder.Services.AddSingleton<IMessageClient>(
     new MessageClient(RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest")));
 builder.Services.AddHostedService<PostServiceMessageHandler>();
 builder.Services.AddScoped<PostManager>();
-builder.Services.AddScoped<PostRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 
 var app = builder.Build();
 

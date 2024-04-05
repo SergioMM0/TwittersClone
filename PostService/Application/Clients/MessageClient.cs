@@ -1,8 +1,9 @@
 ﻿using EasyNetQ;
+using PostService.Application.Interfaces.Clients;
 
 namespace PostService.Application.Clients;
 
-public class MessageClient {
+public class MessageClient : IMessageClient {
     private readonly IBus _bus;
 
     public MessageClient(IBus bus) {
