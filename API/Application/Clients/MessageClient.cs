@@ -4,6 +4,7 @@ namespace API.Application.Clients;
 
 public class MessageClient {
     private readonly IBus _bus;
+    private readonly HashSet<string> _subscriptions = new HashSet<string>();
 
     public MessageClient(IBus bus) {
         _bus = bus;
@@ -18,7 +19,12 @@ public class MessageClient {
     }
 
     public void Listen<T>(Action<T> handler, string topic) {
-        _bus.PubSub.Subscribe<T>(topic, handler);
+        if (!_subscriptions.Add(topic)) {
+            Console.WriteLine($"Already subscribed to topic {topic}. Ignoring duplicate subscription.");
+            return;
+        }
+
+        _bus.PubSub.Subscribe<T>(Guid.NewGuid().ToString(), handler, x => x.WithTopic(topic));
     }
 
     public Task<T> ListenAsync<T>(string topic) {

@@ -5,6 +5,7 @@ using LikeService.Infrastructure.Repositories;
 using RabbitMQMessages.Like;
 using RabbitMQMessages.Post;
 using RabbitMQMessages.User;
+using RabbitMQMessages.Notification;
 
 namespace LikeService.Core.Services;
 
@@ -88,6 +89,13 @@ public class LikeManager {
             {
                 Success = true
             }, "API/like-added");
+
+            // Send a like notification to the post author
+            Console.WriteLine("Sending like notification to author of post with id: " + postId);
+            _messageClient.Send(new SendLikeNotifReqMsg() {
+                UserId = userId,
+                PostId = postId
+            }, "NotificationService/send-like-notification-request");
         }
     }
 }

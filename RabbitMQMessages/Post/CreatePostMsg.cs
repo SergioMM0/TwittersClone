@@ -1,4 +1,4 @@
-﻿namespace RabbitMQMessages.Post {
+namespace RabbitMQMessages.Post {
     public class CreatePostMsg {
         public required string Title { get; set; }
         public required string Body { get; set; }

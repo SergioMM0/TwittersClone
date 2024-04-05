@@ -17,6 +17,28 @@ public class UserManager
         _messageClient = messageClient;
     }
 
+    public void CheckUserIdExists(int userId)
+    {
+        Console.WriteLine("Checking user with id: " + userId);
+        var userExists = _userRepository.CheckUserIdExists(userId);
+
+        if (!userExists)
+        {
+            Console.WriteLine("User was not found... sending response to API");
+            _messageClient.Send(new CheckUserIdExistsMsg()
+            {
+                UserId = userId,
+                Exists = false
+            }, "API/user-exists-response");
+            return;
+        }
+        Console.WriteLine("User was found... sending response to API");
+        _messageClient.Send(new CheckUserIdExistsMsg()
+        {
+            UserId = userId,
+            Exists = true
+        }, "API/user-exists-response");
+    }
 
     public void HandleLogin(string username, string password)
     {

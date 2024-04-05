@@ -52,6 +52,14 @@ public class PostServiceMessageHandler : BackgroundService {
         userManager.CheckExists(msg.Id, msg.ReceiverTopic);
     }
 
+    private void HandleGetPostAuthorById(GetPostAuthorById msg) {
+        using var scope = _scopeFactory.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<PostManager>();
+
+        Console.WriteLine($"{nameof(PostServiceMessageHandler)}: Getting post author by id...");
+        userManager.GetPostAuthorById(msg.Id);
+    }
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
         Console.WriteLine("Message handler is running...");
 
@@ -67,6 +75,8 @@ public class PostServiceMessageHandler : BackgroundService {
         messageClient.Listen<GetAllPostMsg>(HandleGetAllPost, "PostService/getAllPosts");
         
         messageClient.Listen<PostExistsReqMsg>(HandleCheckPostExists, "PostService/checkPostExists");
+
+        messageClient.Listen<GetPostAuthorById>(HandleGetPostAuthorById, "PostService/getPostAuthorById-request");
         
         while (!stoppingToken.IsCancellationRequested) {
             await Task.Delay(1000, stoppingToken);
