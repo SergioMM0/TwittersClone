@@ -1,6 +1,8 @@
 ﻿using EasyNetQ;
 using LikeService.Application.Clients;
 using LikeService.Application.Handlers;
+using LikeService.Application.Interfaces.Clients;
+using LikeService.Application.Interfaces.Repositories;
 using LikeService.Core.Services;
 using LikeService.Infrastructure.Context;
 using LikeService.Infrastructure.Repositories;
@@ -17,11 +19,11 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteDatabasePath")));
 
-builder.Services.AddSingleton(
+builder.Services.AddSingleton<IMessageClient>(
     new MessageClient(RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest")));
 builder.Services.AddHostedService<LikeServiceMessageHandler>();
 builder.Services.AddScoped<LikeManager>();
-builder.Services.AddScoped<LikeRepository>();
+builder.Services.AddScoped<ILikeRepository, LikeRepository>();
 
 var app = builder.Build();
 
