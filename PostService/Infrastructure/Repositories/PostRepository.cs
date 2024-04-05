@@ -1,9 +1,10 @@
-﻿using PostService.Core.Entities;
+﻿using PostService.Application.Interfaces.Repositories;
+using PostService.Core.Entities;
 using PostService.Infrastructure.Context;
 
 namespace PostService.Infrastructure.Repositories;
 
-public class PostRepository {
+public class PostRepository : IPostRepository {
     private readonly DatabaseContext _dbContext;
 
     public PostRepository(DatabaseContext context) {
