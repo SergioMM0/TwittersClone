@@ -19,7 +19,6 @@ public class UserManager
         _messageClient = messageClient;
     }
     
-    // Tested 
     public void CheckUserIdExists(int userId)
     {
         Console.WriteLine("Checking user with id: " + userId);

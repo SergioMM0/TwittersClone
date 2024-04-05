@@ -3,6 +3,7 @@
 namespace UserService.Application.Interfaces.Repositories;
 
 public interface IUserRepository {
+    bool CheckUserIdExists(int userId);
     bool CheckUserExists(string username);
     bool CheckUserExists(int id);
     User? CheckPassword(string username, string password);
