@@ -80,7 +80,7 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-  #      
+       
   post-service:
     image: post-service
     build:

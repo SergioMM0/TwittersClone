@@ -3,6 +3,7 @@ using EasyNetQ;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using NotificationService.Application.Clients;
 using RabbitMQMessages.Follow;
+using RabbitMQMessages.Post;
 using RabbitMQMessages.Notification;
 
 namespace NotificationService.Core.Services;
@@ -25,13 +26,7 @@ public class NotificationManager
             {
                 foreach (var listenerId in msg.NotifListeners)
                 {
-                    // Assuming Send is synchronous and there's no async version
-                    _messageClient.Send(new ReceiveNotificationMsg
-                    {
-                        UserId = listenerId,
-                        Message = $"User {userId} posted a new post with id {postId}!",
-                        NotificationSent = true
-                    }, "NotificationService/send-notification-response");
+                    Console.WriteLine("Notification: Hey "+listenerId+"! User with id: " + userId + " posted a new post with id: " + postId);
                 }
                 tcs.SetResult(true); // Notify the task completion
             }
@@ -48,5 +43,36 @@ public class NotificationManager
         _messageClient.Send(new FetchNotifListenersReqMsg { UserId = userId }, "FollowingService/fetch-notif-listeners-request");
 
         return await tcs.Task; // Wait here until HandleFetchNotifListenersResponse signals completion
+    }
+
+    public async Task SendLikeNotifMsg(int userId, int postId)
+    {   
+        var receiverTopic = "Notification/getPostAuthorById-response";
+        var task = _messageClient.ListenAsync<PostAuthorMsg>(receiverTopic);
+
+        Console.WriteLine("Getting post author by post id: " + postId + "...");
+
+        // Fetch the author of the post
+        _messageClient.Send(new GetPostAuthorById { Id = postId }, "PostService/getPostAuthorById-request");
+
+        var postAuthor = await task;
+
+        if (!postAuthor.Success)
+        {
+            Console.WriteLine("Post author not found... sending response to API");
+            _messageClient.Send(new 
+            {
+                Success = false,
+                Reason = "Post author not found"
+            }, "API/like-added");
+            return;
+        }
+        else
+        {
+            Console.WriteLine("Post author found... sending like notification to author");
+
+            // Send a notification to the post author that the user liked their post
+            Console.WriteLine("Notification: Hey "+postAuthor.AuthorId+"! User with id: " + userId + " liked your post with id: " + postId);
+        }
     }
 }

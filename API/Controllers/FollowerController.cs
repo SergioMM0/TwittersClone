@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using RabbitMQMessages.Follow;
 using RabbitMQMessages.User;
-using RabbitMQMessages.Notification;
 
 namespace API.Controllers;
 
@@ -130,34 +129,6 @@ public class FollowerController : ControllerBase {
             return BadRequest("Couldn't toggle the notification setting for the follower.");
         }
         return Ok("Notification setting successfully toggled to: " + followerUpdatedResponse.ListenToNotifications);
-    }
-    [HttpPost("SendNotification")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-    public async Task<IActionResult> SendNotificationAsync([FromQuery] int UserId, [FromQuery] int PostId) {
-        if (UserId == 0 || PostId == 0) {
-            return BadRequest("Invalid user or post ID.");
-        }
-
-        // Check if the user exists
-        var userExistsResponseTask = _messageClient.ListenAsync<CheckUserIdExistsMsg>("API/user-exists-response");
-        _messageClient.Send(new CheckUserIdExistsReqMsg { UserId = UserId }, "UserService/user-exists-request");
-        var userExistsResponse = await userExistsResponseTask;
-
-        if (!userExistsResponse.Exists) {
-            return BadRequest("Couldn't find the user to send notification");
-        }
-
-        // Send the notification to all the listeners
-        var notificationSentResponseTask = _messageClient.ListenAsync<SendNotificationMsg>("NotificationService/send-notification-response");
-        _messageClient.Send(new SendNotificationReqMsg { UserId = UserId, PostId = PostId }, "NotificationService/send-notification-request");
-        var notificationSentResponse = await notificationSentResponseTask;
-
-        if (!notificationSentResponse.NotificationSent) {
-            return BadRequest("Couldn't send the notification to the listeners.");
-        }
-
-        return Ok("Notification sent successfully: " + notificationSentResponse.Message);
     }
 }
 

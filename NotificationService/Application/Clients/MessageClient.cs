@@ -23,4 +23,18 @@ public class MessageClient {
     public void SendAsync<T>(T message, string topic) {
         _bus.PubSub.PublishAsync(message, topic);
     }
+
+    public Task<T> ListenAsync<T>(string topic) {
+        var tcs = new TaskCompletionSource<T>();
+        var subscriptionId = Guid.NewGuid().ToString();
+
+        IDisposable subscription = null!;
+
+        subscription = _bus.PubSub.SubscribeAsync<T>(subscriptionId, message => {
+            tcs.TrySetResult(message);
+            subscription.Dispose();
+        }, cfg => cfg.WithTopic(topic));
+
+        return tcs.Task;
+    }
 }
