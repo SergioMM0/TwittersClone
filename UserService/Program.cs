@@ -2,6 +2,8 @@ using EasyNetQ;
 using Microsoft.EntityFrameworkCore;
 using UserService.Application.Clients;
 using UserService.Application.Handlers;
+using UserService.Application.Interfaces.Clients;
+using UserService.Application.Interfaces.Repositories;
 using UserService.Models;
 using UserService.Core.Services;
 using UserService.Infrastructure.Repositories;
@@ -19,10 +21,10 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 
 // Add services
 
-builder.Services.AddSingleton(new MessageClient(RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest")));
+builder.Services.AddSingleton<IMessageClient>(new MessageClient(RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest")));
 builder.Services.AddHostedService<UserServiceMessageHandler>();
 builder.Services.AddScoped<UserManager>();
-builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 

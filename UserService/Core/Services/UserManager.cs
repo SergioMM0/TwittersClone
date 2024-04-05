@@ -1,6 +1,8 @@
 ﻿using RabbitMQMessages.Login;
 using RabbitMQMessages.User;
 using UserService.Application.Clients;
+using UserService.Application.Interfaces.Clients;
+using UserService.Application.Interfaces.Repositories;
 using UserService.Infrastructure.Repositories;
 using UserService.Core.Domain.Entities;
 
@@ -8,16 +10,16 @@ namespace UserService.Core.Services;
 
 public class UserManager
 {
-    private readonly UserRepository _userRepository;
-    private readonly MessageClient _messageClient;
+    private readonly IUserRepository _userRepository;
+    private readonly IMessageClient _messageClient;
 
-    public UserManager(UserRepository userRepository, MessageClient messageClient)
+    public UserManager(IUserRepository userRepository, IMessageClient messageClient)
     {
         _userRepository = userRepository;
         _messageClient = messageClient;
     }
 
-
+    // Tested 
     public void HandleLogin(string username, string password)
     {
         Console.WriteLine("Checking username: " + username + " and password: " + password);

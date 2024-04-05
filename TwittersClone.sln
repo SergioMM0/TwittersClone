@@ -32,6 +32,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMQMessages", "RabbitMQMessages\RabbitMQMessages.csproj", "{A1C4328C-C223-43ED-80C0-4E541D149344}"
 
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Tests", "UserService.Tests\UserService.Tests.csproj", "{F6B452C4-B678-48B3-B00F-B7A18DB5095C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{A1C4328C-C223-43ED-80C0-4E541D149344}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1C4328C-C223-43ED-80C0-4E541D149344}.Release|Any CPU.Build.0 = Release|Any CPU
 
+		{F6B452C4-B678-48B3-B00F-B7A18DB5095C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6B452C4-B678-48B3-B00F-B7A18DB5095C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6B452C4-B678-48B3-B00F-B7A18DB5095C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6B452C4-B678-48B3-B00F-B7A18DB5095C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

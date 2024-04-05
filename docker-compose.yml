@@ -25,18 +25,18 @@ services:
       rabbitmq:
         condition: service_healthy
   
-  #auth-service:
-  #  image: auth-service
-  #  build:
-  #    context: .
-  #    dockerfile: AuthService/Dockerfile
-  #  ports:
-  #    - "81:80"
-  #  environment:
-  #    ASPNETCORE_ENVIRONMENT: Production
-  #  depends_on:
-  #    rabbitmq:
-  #      condition: service_healthy
+  auth-service:
+    image: auth-service
+    build:
+      context: .
+      dockerfile: AuthService/Dockerfile
+    ports:
+      - "81:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   #followers-service:
   #  image: followers-service
