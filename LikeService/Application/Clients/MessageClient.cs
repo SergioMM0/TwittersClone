@@ -1,7 +1,8 @@
 ﻿using EasyNetQ;
+using LikeService.Application.Interfaces.Clients;
 
 namespace LikeService.Application.Clients {
-    public class MessageClient {
+    public class MessageClient : IMessageClient {
         private readonly IBus _bus;
 
         public MessageClient(IBus bus) {

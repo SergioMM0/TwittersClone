@@ -1,5 +1,7 @@
 ﻿using EasyNetQ;
 using LikeService.Application.Clients;
+using LikeService.Application.Interfaces.Clients;
+using LikeService.Application.Interfaces.Repositories;
 using LikeService.Core.Entities;
 using LikeService.Infrastructure.Repositories;
 using RabbitMQMessages.Like;
@@ -10,14 +12,12 @@ using RabbitMQMessages.Notification;
 namespace LikeService.Core.Services;
 
 public class LikeManager {
-    private readonly LikeRepository _postRepository;
-    private readonly MessageClient _messageClient;
+    private readonly ILikeRepository _likeRepository;
+    private readonly IMessageClient _messageClient;
 
-    public LikeManager(LikeRepository postRepository) {
-        _postRepository = postRepository;
-        // Create a new message client for EF context issue
-        _messageClient = new MessageClient(
-            RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest"));
+    public LikeManager(ILikeRepository likeRepository, IMessageClient messageClient) {
+        _likeRepository = likeRepository;
+        _messageClient = messageClient;
     }
     public async Task AddLike(int postId, int userId) {
         var receiverTopicUser = "LikeService/checkUserExists-response";
@@ -71,7 +71,7 @@ public class LikeManager {
             UserId = userId
         };
         
-        var result = _postRepository.Add(like);
+        var result = _likeRepository.Add(like);
 
         if (result is null)
         {

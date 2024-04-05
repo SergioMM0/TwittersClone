@@ -1,9 +1,10 @@
-﻿using LikeService.Core.Entities;
+﻿using LikeService.Application.Interfaces.Repositories;
+using LikeService.Core.Entities;
 using LikeService.Infrastructure.Context;
 
 namespace LikeService.Infrastructure.Repositories;
 
-public class LikeRepository{
+public class LikeRepository : ILikeRepository{
     private readonly DatabaseContext _dbContext;
 
     public LikeRepository(DatabaseContext context) {
