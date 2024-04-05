@@ -23,4 +23,8 @@
       </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\FollowersService\FollowersService.csproj" />
+    </ItemGroup>
+
 </Project>

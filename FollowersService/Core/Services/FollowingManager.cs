@@ -1,14 +1,16 @@
 ﻿using FollowersService.Application.Clients;
 using FollowersService.Core.Domain.Entities;
+using FollowersService.Application.Interfaces.Clients;
+using FollowersService.Application.Interfaces.Repositories;
 using FollowersService.Infrastructure.Repositories;
 using RabbitMQMessages.Follow;
 
 namespace FollowersService.Core.Services; 
 public class FollowingManager {
-    private readonly MessageClient _messageClient;
-    private readonly FollowersRepository _followersRepository;
+    private readonly IMessageClient _messageClient;
+    private readonly IFollowersRepository _followersRepository;
 
-    public FollowingManager(MessageClient messageClient, FollowersRepository followersRepository) {
+    public FollowingManager(IMessageClient messageClient, IFollowersRepository followersRepository) {
         _messageClient = messageClient;
         _followersRepository = followersRepository;
     }
