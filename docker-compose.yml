@@ -53,19 +53,21 @@ services:
       rabbitmq:
         condition: service_healthy
 
-  #like-service:
-  #  image: like-service
-  #  build:
-  #    context: .
-  #    dockerfile: LikeService/Dockerfile
-  #  ports:
-  #    - "83:80"
-  #  environment:
-  #    ASPNETCORE_ENVIRONMENT: Production
-  #  depends_on:
-  #    rabbitmq:
-  #      condition: service_healthy
-  #
+  like-service:
+    image: like-service
+    build:
+      context: .
+      dockerfile: LikeService/Dockerfile
+    ports:
+      - "83:80"
+    volumes:
+      - ./LikeService/LikeDatabase:/app/LikeDatabase
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+  
   notification-service:
     image: notification-service
     build:
@@ -94,19 +96,6 @@ services:
       rabbitmq:
         condition: service_healthy
   
-  #search-service:
-  #  image: search-service
-  #  build:
-  #    context: .
-  #    dockerfile: SearchService/Dockerfile
-  #  ports:
-  #    - "86:80"
-  #  environment:
-  #    ASPNETCORE_ENVIRONMENT: Production
-  #  depends_on:
-  #    rabbitmq:
-  #      condition: service_healthy
-  #
   user-service:
     image: user-service
     build:
