@@ -2,6 +2,7 @@
 using NotificationService.Application.Handlers;
 using NotificationService.Core.Services;
 using EasyNetQ;
+using NotificationService.Application.Interfaces.Clients;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddControllers();
-builder.Services.AddSingleton(new MessageClient(RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest")));
+builder.Services.AddSingleton<IMessageClient>(new MessageClient(RabbitHutch.CreateBus("host=rabbitmq;port=5672;virtualHost=/;username=guest;password=guest")));
 builder.Services.AddHostedService<MessageHandler>();
 builder.Services.AddScoped<NotificationManager>();
 

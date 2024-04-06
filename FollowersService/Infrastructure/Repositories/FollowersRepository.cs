@@ -1,9 +1,10 @@
+using FollowersService.Application.Interfaces.Repositories;
 using FollowersService.Core.Domain.Entities;
 using FollowersService.Models;
 
 namespace FollowersService.Infrastructure.Repositories;
 
-public class FollowersRepository
+public class FollowersRepository : IFollowersRepository
 {
     private readonly DatabaseContext _dbContext;
 

@@ -4,10 +4,10 @@ using EasyNetQ;
 using RabbitMQMessages.Follow;
 
 namespace FollowersService.Application.Handlers; 
-public class MessageHandler : BackgroundService {
+public class FollowerMessageHandler : BackgroundService {
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public MessageHandler(IServiceScopeFactory scopeFactory)
+    public FollowerMessageHandler(IServiceScopeFactory scopeFactory)
     {
         _scopeFactory = scopeFactory;
     }
