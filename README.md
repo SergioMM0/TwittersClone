@@ -36,7 +36,7 @@ This command builds and starts all services, including RabbitMQ, setting up the 
 ## Accessing Services
 
 - **RabbitMQ Management Interface**: `http://localhost:15672` to monitor message queues and throughput.
-- **API Gateway**: Accessed via `http://localhost`, serving as the entry point for interacting with the application through defined endpoints.
+- **API Gateway**: Accessed via `http://localhost:80`, serving as the entry point for interacting with the application through defined endpoints.
 
 ## Development and Production Environments
 
