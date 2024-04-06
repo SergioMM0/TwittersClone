@@ -1,5 +1,4 @@
 # TwittersClone
-Compulsory assignment for System Integration
 
 ![image](https://github.com/SergioMM0/TwittersClone/assets/90683062/262251c3-e961-49b4-87dd-605606954521)
 
