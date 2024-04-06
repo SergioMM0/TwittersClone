@@ -1,6 +1,8 @@
 # TwittersClone
 Compulsory assignment for System Integration
-![image](https://github.com/SergioMM0/TwittersClone/assets/90683062/70535833-ab15-4dc3-ae33-630c86ae1f5d)
+
+![image](https://github.com/SergioMM0/TwittersClone/assets/90683062/262251c3-e961-49b4-87dd-605606954521)
+
 
 ## Project Overview
 This project is a microservices-based social media application designed to demonstrate a decoupled, scalable architecture. Services communicate asynchronously via RabbitMQ, handling distinct aspects of the application such as user authentication, post management, follower relationships, likes, and notifications.
